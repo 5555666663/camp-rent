@@ -37,7 +37,7 @@ public interface EquipmentMapper extends BaseMapper<Equipment> {
             "<if test='categoryId != null'> AND e.category_id = #{categoryId} </if>" +
             "<if test='productType != null'> AND e.product_type = #{productType} </if>" +
             "<if test='status != null'> AND e.status = #{status} </if>" +
-            "<if test='keyword != null and keyword != \"\"'> AND e.eq_name LIKE CONCAT('%', #{keyword}, '%') </if>" +
+            "<if test='keyword != null and keyword != \"\"'> AND (e.eq_name LIKE CONCAT('%', #{keyword}, '%') OR e.brand LIKE CONCAT('%', #{keyword}, '%')) </if>" +
             "ORDER BY e.id DESC" +
             "</script>")
     IPage<EquipmentVO> selectEquipmentPage(Page<EquipmentVO> page,

@@ -26,6 +26,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="eqName" label="装备名称" min-width="140" />
+      <el-table-column prop="brand" label="品牌" width="100" />
       <el-table-column prop="storeName" label="归属网点" width="130" />
       <el-table-column prop="categoryName" label="分类" width="90" />
       <el-table-column prop="pricePerDay" label="日租金" width="90">
@@ -70,6 +71,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="品牌">
+              <el-input v-model="form.brand" placeholder="如 牧高笛 / 挪客 / 自嗨锅" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16">
+          <el-col :span="12">
+            <el-form-item label="规格">
+              <el-input v-model="form.spec" placeholder="如 2 人 / 210×150cm / 320g" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="归属网点" prop="storeId">
               <el-select v-model="form.storeId" placeholder="选择网点" style="width: 100%">
                 <el-option v-for="s in stores" :key="s.id" :label="s.storeName" :value="s.id" />
@@ -106,8 +119,8 @@
         <el-form-item label="装备图片">
           <el-input v-model="form.eqImg" placeholder="图片URL地址（http/https）" />
         </el-form-item>
-        <el-form-item label="装备描述">
-          <el-input v-model="form.description" type="textarea" :rows="3" />
+        <el-form-item label="商品介绍">
+          <el-input v-model="form.description" type="textarea" :rows="4" placeholder="介绍商品的特点、适用场景、材质参数等" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -138,7 +151,7 @@ const dialogVisible = ref(false)
 const formRef = ref()
 const query = reactive({ current: 1, size: 10, keyword: '', storeId: null, categoryId: null, status: null })
 const form = reactive({
-  id: null, eqName: '', storeId: null, categoryId: null, stockNum: 1,
+  id: null, eqName: '', brand: '', spec: '', storeId: null, categoryId: null, stockNum: 1,
   pricePerDay: 0, deposit: 0, eqImg: '', description: ''
 })
 
@@ -176,7 +189,7 @@ function search() {
 
 function openAdd() {
   Object.assign(form, {
-    id: null, eqName: '', storeId: null, categoryId: null, stockNum: 1,
+    id: null, eqName: '', brand: '', spec: '', storeId: null, categoryId: null, stockNum: 1,
     pricePerDay: 0, deposit: 0, eqImg: '', description: ''
   })
   dialogVisible.value = true

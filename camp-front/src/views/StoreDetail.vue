@@ -41,7 +41,7 @@
               <span class="cat-chip">{{ it.categoryName }}</span>
             </div>
             <div class="goods-body">
-              <div class="goods-name">{{ it.eqName }}</div>
+              <div class="goods-name"><span v-if="it.brand" class="brand-mini">{{ it.brand }}</span>{{ it.eqName }}</div>
               <div class="goods-spec" v-if="it.spec">{{ it.spec }}</div>
               <div class="goods-price">
                 <b>¥{{ it.pricePerDay }}</b><span>/天</span>
@@ -64,7 +64,7 @@
               <span class="cat-chip food">食品</span>
             </div>
             <div class="goods-body">
-              <div class="goods-name">{{ it.eqName }}</div>
+              <div class="goods-name"><span v-if="it.brand" class="brand-mini">{{ it.brand }}</span>{{ it.eqName }}</div>
               <div class="goods-spec" v-if="it.spec">{{ it.spec }}</div>
               <div class="goods-price"><b>¥{{ it.salePrice }}</b><span>/件</span></div>
               <div class="goods-foot">
@@ -331,6 +331,23 @@ onMounted(load)
   font-weight: 700;
   color: var(--camp-ink, #0f1f1a);
   margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brand-mini {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 7px;
+  height: 19px;
+  line-height: 19px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: 1px;
+  color: #0e9b62;
+  background: rgba(22, 184, 118, 0.12);
 }
 
 .goods-spec {

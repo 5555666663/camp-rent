@@ -58,6 +58,10 @@
         </div>
 
         <div class="eq-body">
+          <div class="brand-row">
+            <span v-if="eq.brand" class="brand-chip">{{ eq.brand }}</span>
+            <span v-if="eq.spec" class="spec-text">{{ eq.spec }}</span>
+          </div>
           <h3 class="eq-name">{{ eq.eqName }}</h3>
           <div class="eq-store">
             <el-icon><LocationFilled /></el-icon>
@@ -341,6 +345,36 @@ function goDetail(eq) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.brand-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 21px;
+  padding: 0 9px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #16b876, #3ddc97);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 10px rgba(22, 184, 118, 0.18);
+}
+
+.spec-text {
+  font-size: 11.5px;
+  color: var(--camp-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
 }
 
 .eq-store {

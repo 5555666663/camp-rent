@@ -34,6 +34,9 @@ public class Equipment implements Serializable {
     /** 装备名称 */
     private String eqName;
 
+    /** 品牌 */
+    private String brand;
+
     /** 规格，如 2 人 / 320g/盒 */
     private String spec;
 

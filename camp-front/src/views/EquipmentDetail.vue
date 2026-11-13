@@ -19,6 +19,10 @@
         <!-- 右：信息 -->
         <div class="detail-info camp-card">
           <div class="info-head">
+            <div v-if="eq.brand" class="brand-line">
+              <span class="brand-chip">{{ eq.brand }}</span>
+              <span v-if="eq.spec" class="spec-text">{{ eq.spec }}</span>
+            </div>
             <h1 class="eq-name">{{ eq.eqName }}</h1>
             <div class="eq-tags">
               <el-tag type="success" effect="light">{{ eq.categoryName }}</el-tag>
@@ -53,14 +57,18 @@
               </span>
             </div>
             <div class="meta-row">
+              <span class="meta-label">品牌 / 规格</span>
+              <span class="meta-value">{{ eq.brand || '—' }}<template v-if="eq.spec"> · {{ eq.spec }}</template></span>
+            </div>
+            <div class="meta-row">
               <span class="meta-label">计费方式</span>
               <span class="meta-value">按天计费，不足 1 天按 1 天计算</span>
             </div>
           </div>
 
           <div class="desc">
-            <h4>装备描述</h4>
-            <p>{{ eq.description || '这件装备还没有填写描述～' }}</p>
+            <h4>商品介绍</h4>
+            <p>{{ eq.description || '这件装备还没有填写介绍～' }}</p>
           </div>
 
           <div class="cta">
@@ -172,6 +180,36 @@ function goOrder() {
 
 .detail-info:hover {
   transform: none;
+}
+
+.brand-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.brand-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 11px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #16b876, #3ddc97);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 5px 14px rgba(22, 184, 118, 0.2);
+}
+
+.spec-text {
+  font-size: 12.5px;
+  color: var(--camp-muted);
+  padding: 3px 10px;
+  border-radius: 7px;
+  background: rgba(15, 31, 26, 0.045);
 }
 
 .eq-name {
