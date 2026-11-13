@@ -2,6 +2,11 @@
   <div class="layout">
     <header class="header">
       <div class="header-inner">
+        <button v-if="showBack" class="back-btn" title="返回上一页" @click="goBack">
+          <el-icon><ArrowLeft /></el-icon>
+          <span>返回</span>
+        </button>
+
         <router-link to="/" class="logo">
           <span class="logo-icon">⛺</span>
           <span class="logo-text">
@@ -82,7 +87,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store'
 import { ElMessage } from 'element-plus'
 import {
@@ -93,11 +98,24 @@ import {
   Setting,
   SwitchButton,
   ArrowDown,
+  ArrowLeft,
   Sunny
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
+
+// 首页（装备浏览）不显示返回键，其余页面显示
+const showBack = computed(() => route.path !== '/equipment' && route.path !== '/')
+
+function goBack() {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/equipment')
+  }
+}
 
 const avatarText = computed(() => {
   const name = userStore.username || 'U'
@@ -141,8 +159,37 @@ function handleCommand(cmd) {
   height: 70px;
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 18px;
   padding: 0 24px;
+}
+
+/* 返回键 */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 34px;
+  padding: 0 13px 0 10px;
+  border: 1px solid var(--camp-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--camp-ink-2);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.back-btn:hover {
+  color: var(--camp-primary-dark);
+  border-color: rgba(22, 184, 118, 0.45);
+  background: var(--camp-primary-soft);
+  transform: translateX(-2px);
+}
+
+.back-btn .el-icon {
+  font-size: 15px;
 }
 
 /* Logo */
