@@ -231,7 +231,7 @@ onMounted(() => {
 }
 
 .crumb a {
-  color: var(--camp-primary, #16b876);
+  color: var(--camp-primary, #1e40af);
   text-decoration: none;
 }
 
@@ -244,17 +244,17 @@ onMounted(() => {
   grid-template-columns: 420px 1fr;
   gap: 28px;
   background: #fff;
-  border-radius: 20px;
+  border-radius: var(--camp-radius);
   padding: 20px;
-  border: 1px solid var(--camp-line, rgba(15, 31, 26, 0.07));
-  box-shadow: 0 14px 40px rgba(15, 31, 26, 0.07);
-  margin-bottom: 26px;
+  border: 1px solid var(--camp-line, #e5e7eb);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  margin-bottom: 24px;
 }
 
 .hero-img {
   height: 300px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #d9f5e6, #b7ecd4);
+  background: #dbeafe;
   background-size: cover;
   background-position: center;
 }
@@ -273,14 +273,14 @@ onMounted(() => {
 .tag {
   font-size: 12px;
   color: #fff;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
+  background: #1e40af;
   padding: 3px 12px;
   border-radius: 999px;
 }
 
 .tag.light {
-  background: var(--camp-primary-soft, #e9fbf2);
-  color: var(--camp-primary-dark, #0e9b62);
+  background: var(--camp-primary-soft, #eff6ff);
+  color: var(--camp-primary-dark, #1e40af);
 }
 
 .hero-title {
@@ -329,7 +329,7 @@ onMounted(() => {
   color: var(--camp-ink, #0f1f1a);
   margin: 0 0 14px;
   padding-left: 12px;
-  border-left: 4px solid var(--camp-primary, #16b876);
+  border-left: 4px solid var(--camp-primary, #1e40af);
   line-height: 1.2;
 }
 
@@ -353,7 +353,7 @@ onMounted(() => {
   width: 72px;
   height: 72px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #d9f5e6, #b7ecd4);
+  background: #dbeafe;
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
@@ -371,7 +371,7 @@ onMounted(() => {
 
 .qty {
   font-size: 13px;
-  color: var(--camp-primary-dark, #0e9b62);
+  color: var(--camp-primary-dark, #1e40af);
 }
 
 .item-meta {
@@ -383,13 +383,13 @@ onMounted(() => {
 .single-link {
   font-size: 13px;
   font-weight: 600;
-  color: var(--camp-primary, #16b876);
+  color: var(--camp-primary, #1e40af);
   cursor: pointer;
   white-space: nowrap;
 }
 
 .single-link:hover {
-  color: var(--camp-primary-dark, #0e9b62);
+  color: var(--camp-primary-dark, #1e40af);
 }
 
 .custom-items {

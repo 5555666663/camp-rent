@@ -148,7 +148,7 @@ function go(id) {
   height: 34px;
   flex: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
+  background: #1e40af;
   color: #fff;
   font-weight: 700;
   display: flex;
@@ -177,8 +177,8 @@ function go(id) {
 .distance {
   font-size: 12px;
   font-weight: 700;
-  color: #16b876;
-  background: #e9fbf2;
+  color: #1e40af;
+  background: #eff6ff;
   padding: 2px 10px;
   border-radius: 999px;
 }

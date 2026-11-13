@@ -343,11 +343,10 @@ function escapeHtml(str) {
   display: flex;
   flex-direction: column;
   padding: 18px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(18px);
-  box-shadow: 0 18px 40px rgba(15, 31, 26, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: var(--camp-radius);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--camp-line);
 }
 
 .panel-head {
@@ -364,8 +363,8 @@ function escapeHtml(str) {
   display: grid;
   place-items: center;
   font-size: 20px;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
-  box-shadow: 0 8px 18px rgba(22, 184, 118, 0.3);
+  background: #1e40af;
+  box-shadow: 0 8px 18px rgba(30, 64, 175, 0.3);
   flex-shrink: 0;
 }
 
@@ -427,15 +426,15 @@ function escapeHtml(str) {
 
 .store-item:hover,
 .store-item.active {
-  background: #eafaf1;
+  background: #eff6ff;
 }
 
 .store-dot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
-  box-shadow: 0 0 0 4px rgba(22, 184, 118, 0.14);
+  background: #1e40af;
+  box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.14);
   flex-shrink: 0;
 }
 
@@ -502,8 +501,8 @@ function escapeHtml(str) {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 3px solid rgba(22, 184, 118, 0.18);
-  border-top-color: #16b876;
+  border: 3px solid rgba(30, 64, 175, 0.18);
+  border-top-color: #1e40af;
   animation: spin 0.8s linear infinite;
 }
 
@@ -553,7 +552,7 @@ function escapeHtml(str) {
   padding: 7px 12px;
   border-radius: 999px;
   background: #fff;
-  border: 1px solid rgba(22, 184, 118, 0.35);
+  border: 1px solid rgba(30, 64, 175, 0.35);
   box-shadow: 0 8px 20px rgba(15, 31, 26, 0.18);
   font-size: 12.5px;
   font-weight: 700;
@@ -563,7 +562,7 @@ function escapeHtml(str) {
 }
 
 .amap-pin:hover .amap-pin-body {
-  background: linear-gradient(135deg, #16b876, #3ddc97);
+  background: #1e40af;
   color: #fff;
   border-color: transparent;
   transform: translateY(-2px);
@@ -605,7 +604,7 @@ function escapeHtml(str) {
   display: grid;
   place-items: center;
   font-size: 18px;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
+  background: #1e40af;
 }
 
 .amap-info .info-name {
@@ -667,9 +666,9 @@ function escapeHtml(str) {
 }
 
 .amap-info .btn.primary {
-  background: linear-gradient(135deg, #16b876, #3ddc97);
+  background: #1e40af;
   color: #fff;
-  box-shadow: 0 8px 18px rgba(22, 184, 118, 0.32);
+  box-shadow: 0 8px 18px rgba(30, 64, 175, 0.32);
 }
 
 .amap-info .btn.primary:hover {

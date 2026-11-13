@@ -265,7 +265,7 @@ async function submitComment() {
 .status-tabs :deep(.el-tabs__active-bar) {
   height: 3px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--camp-primary), var(--camp-primary-2));
+  background: var(--camp-primary);
 }
 
 .order-list {
@@ -296,23 +296,23 @@ async function submitComment() {
 }
 
 .st-0 .accent {
-  background: linear-gradient(180deg, #ffb547, #ff8a3d);
+  background: #f59e0b;
 }
 
 .st-1 .accent {
-  background: linear-gradient(180deg, #3ddc97, #16b876);
+  background: #3b82f6;
 }
 
 .st-2 .accent {
-  background: linear-gradient(180deg, #7aa7ff, #4b7bec);
+  background: #60a5fa;
 }
 
 .st-3 .accent {
-  background: linear-gradient(180deg, #7ee2b8, #2bbd7e);
+  background: #60a5fa;
 }
 
 .st-4 .accent {
-  background: linear-gradient(180deg, #ff8a8f, #f2555a);
+  background: #ef4444;
 }
 
 .order-head {
@@ -354,14 +354,14 @@ async function submitComment() {
   width: 62px;
   height: 62px;
   border-radius: 14px;
-  background: linear-gradient(145deg, #e9fbf2, #d4f5e6);
+  background: #eff6ff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
   object-fit: cover;
   flex-shrink: 0;
-  box-shadow: inset 0 0 0 1px rgba(22, 184, 118, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(30, 64, 175, 0.1);
 }
 
 .eq-thumb.placeholder {
@@ -408,7 +408,7 @@ async function submitComment() {
 }
 
 .route .dot.to {
-  background: #4b7bec;
+  background: #2563eb;
 }
 
 .route .arrow {

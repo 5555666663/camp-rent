@@ -219,8 +219,8 @@ function goDetail(eq) {
 
 .type-tab.active {
   color: #fff;
-  background: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
-  box-shadow: 0 8px 18px rgba(22, 184, 118, 0.28);
+  background: var(--camp-primary);
+  box-shadow: 0 8px 18px rgba(30, 64, 175, 0.28);
 }
 
 .head-stat {  display: flex;
@@ -281,7 +281,7 @@ function goDetail(eq) {
   position: relative;
   height: 168px;
   overflow: hidden;
-  background: linear-gradient(145deg, #e9fbf2 0%, #d4f5e6 45%, #c2eed9 100%);
+  background: #eff6ff;
   display: grid;
   place-items: center;
 }
@@ -303,7 +303,7 @@ function goDetail(eq) {
 
 .eq-img-placeholder {
   font-size: 52px;
-  filter: drop-shadow(0 8px 16px rgba(22, 184, 118, 0.25));
+  filter: drop-shadow(0 8px 16px rgba(30, 64, 175, 0.25));
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -318,7 +318,7 @@ function goDetail(eq) {
   color: var(--camp-primary-dark);
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(6px);
-  box-shadow: 0 2px 8px rgba(16, 42, 33, 0.08);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
   z-index: 2;
 }
 
@@ -360,12 +360,12 @@ function goDetail(eq) {
   height: 21px;
   padding: 0 9px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
+  background: #1e40af;
   color: #fff;
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 10px rgba(22, 184, 118, 0.18);
+  box-shadow: 0 4px 10px rgba(30, 64, 175, 0.18);
 }
 
 .spec-text {

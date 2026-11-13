@@ -16,8 +16,8 @@
         :default-active="activeMenu"
         router
         background-color="transparent"
-        text-color="#9fb3ac"
-        active-text-color="#ffffff"
+        text-color="#475569"
+        active-text-color="#1e40af"
         class="side-menu"
       >
         <el-menu-item index="/admin/stats"><el-icon><DataAnalysis /></el-icon>数据统计</el-menu-item>
@@ -122,28 +122,28 @@ function handleCommand(cmd) {
 .aside {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #0c1f1a 0%, #0d2a22 55%, #103a2d 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--camp-surface);
+  border-right: 1px solid var(--camp-line);
 }
 
 .aside-logo {
-  height: 74px;
+  height: 64px;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 0 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--camp-line);
 }
 
 .logo-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--camp-radius-sm);
   display: grid;
   place-items: center;
-  font-size: 19px;
-  background: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
-  box-shadow: 0 8px 18px rgba(22, 184, 118, 0.35);
+  font-size: 17px;
+  background: var(--camp-primary-soft);
+  color: var(--camp-primary);
 }
 
 .logo-text {
@@ -154,25 +154,24 @@ function handleCommand(cmd) {
 
 .logo-title {
   font-size: 15px;
-  font-weight: 800;
-  color: #fff;
+  font-weight: 600;
+  color: var(--camp-ink);
   letter-spacing: -0.01em;
 }
 
 .logo-sub {
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--camp-muted);
 }
 
 .menu-label {
-  padding: 22px 24px 8px;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: rgba(255, 255, 255, 0.3);
-  text-transform: uppercase;
+  padding: 20px 24px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--camp-muted);
 }
 
 .side-menu {
@@ -189,7 +188,7 @@ function handleCommand(cmd) {
 
 .aside-foot {
   padding: 14px 16px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--camp-line);
 }
 
 .back-front {
@@ -198,33 +197,31 @@ function handleCommand(cmd) {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 11px;
-  border-radius: 11px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.72);
+  padding: 10px;
+  border-radius: var(--camp-radius-sm);
+  border: 1px solid var(--camp-line);
+  background: #ffffff;
+  color: var(--camp-ink-2);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 150ms ease-out;
   font-family: inherit;
 }
 
 .back-front:hover {
-  background: rgba(22, 184, 118, 0.18);
-  border-color: rgba(61, 220, 151, 0.45);
-  color: #fff;
+  background: var(--camp-primary-soft);
+  border-color: #dbeafe;
+  color: var(--camp-primary);
 }
 
 /* ---------- 顶栏 ---------- */
 .header {
-  height: 74px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  background: #ffffff;
   border-bottom: 1px solid var(--camp-line);
   padding: 0 28px;
 }
@@ -261,13 +258,13 @@ function handleCommand(cmd) {
   cursor: pointer;
   background: #fff;
   border: 1px solid var(--camp-line);
-  box-shadow: 0 1px 2px rgba(16, 42, 33, 0.04);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   outline: none;
 }
 
 .user-chip:hover {
-  box-shadow: 0 6px 18px rgba(16, 42, 33, 0.1);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.1);
   transform: translateY(-1px);
 }
 
@@ -280,7 +277,7 @@ function handleCommand(cmd) {
   font-size: 13px;
   font-weight: 800;
   color: #fff;
-  background: linear-gradient(135deg, #2bbd7e, #7ee2b8);
+  background: #1e40af;
 }
 
 .user-meta {

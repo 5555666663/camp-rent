@@ -228,10 +228,7 @@ watch(mode, () => {
   align-items: center;
   justify-content: center;
   padding: 32px 24px;
-  background:
-    radial-gradient(900px 500px at 12% 0%, rgba(61, 220, 151, 0.2), transparent 60%),
-    radial-gradient(800px 500px at 100% 100%, rgba(22, 184, 118, 0.14), transparent 55%),
-    #f5faf7;
+  background: var(--camp-bg);
 }
 
 .login-shell {
@@ -240,20 +237,21 @@ watch(mode, () => {
   display: grid;
   grid-template-columns: 1.05fr 1fr;
   background: #fff;
-  border-radius: 28px;
+  border: 1px solid var(--camp-line);
+  border-radius: var(--camp-radius);
   overflow: hidden;
-  box-shadow: 0 24px 80px rgba(16, 42, 33, 0.16), 0 2px 8px rgba(16, 42, 33, 0.05);
-  animation: shellIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  animation: shellIn 200ms ease-out both;
 }
 
 @keyframes shellIn {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.985);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
@@ -265,32 +263,12 @@ watch(mode, () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: linear-gradient(155deg, #0c3d2b 0%, #0f6b48 45%, #16b876 100%);
+  background: #1e3a8a;
   overflow: hidden;
 }
 
 .brand-glow {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-.glow-1 {
-  width: 340px;
-  height: 340px;
-  right: -110px;
-  top: -90px;
-  background: radial-gradient(circle, rgba(126, 240, 190, 0.9), transparent 65%);
-}
-
-.glow-2 {
-  width: 280px;
-  height: 280px;
-  left: -100px;
-  bottom: -110px;
-  background: radial-gradient(circle, rgba(59, 220, 151, 0.75), transparent 65%);
+  display: none;
 }
 
 .brand-top {
@@ -422,7 +400,7 @@ watch(mode, () => {
 .login-tabs :deep(.el-tabs__active-bar) {
   height: 3px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--camp-primary), var(--camp-primary-2));
+  background: var(--camp-primary);
 }
 
 .demo-tip {
@@ -461,7 +439,7 @@ watch(mode, () => {
 }
 
 .chip:hover {
-  border-color: rgba(22, 184, 118, 0.45);
+  border-color: rgba(30, 64, 175, 0.45);
   background: var(--camp-primary-soft);
   color: var(--camp-primary-dark);
   transform: translateX(2px);

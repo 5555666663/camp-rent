@@ -227,8 +227,8 @@ onMounted(load)
 }
 
 .tag.city {
-  background: #e9fbf2;
-  color: #0e9b62;
+  background: #eff6ff;
+  color: #1e40af;
 }
 
 .tag.dist {
@@ -237,8 +237,8 @@ onMounted(load)
 }
 
 .tag.on {
-  background: #e9fbf2;
-  color: #0e9b62;
+  background: #eff6ff;
+  color: #1e40af;
 }
 
 .tag.off {
@@ -296,7 +296,7 @@ onMounted(load)
 .cover {
   position: relative;
   height: 158px;
-  background: linear-gradient(135deg, #eefaf3, #dff3e9);
+  background: #f8fafc;
 }
 
 .cover img {
@@ -314,7 +314,7 @@ onMounted(load)
   padding: 3px 9px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
-  color: #16b876;
+  color: #1e40af;
   font-weight: 600;
 }
 
@@ -346,8 +346,8 @@ onMounted(load)
   font-size: 11px;
   font-weight: 700;
   vertical-align: 1px;
-  color: #0e9b62;
-  background: rgba(22, 184, 118, 0.12);
+  color: #1e40af;
+  background: rgba(30, 64, 175, 0.12);
 }
 
 .goods-spec {
@@ -377,7 +377,7 @@ onMounted(load)
 }
 
 .stock {
-  color: #16b876;
+  color: #1e40af;
 }
 
 .cart-bar {
@@ -401,7 +401,7 @@ onMounted(load)
 }
 
 .cart-info b {
-  color: #16b876;
+  color: #1e40af;
 }
 
 .cart-info .total {

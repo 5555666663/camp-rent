@@ -239,8 +239,8 @@ function submit() {
   gap: 14px;
   padding: 14px 16px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #f0fdf7 0%, #e6faf0 100%);
-  border: 1px solid rgba(22, 184, 118, 0.14);
+  background: #f8fafc;
+  border: 1px solid rgba(30, 64, 175, 0.14);
   margin-bottom: 24px;
 }
 
@@ -252,7 +252,7 @@ function submit() {
   place-items: center;
   font-size: 22px;
   background: #fff;
-  box-shadow: 0 6px 14px rgba(22, 184, 118, 0.14);
+  box-shadow: 0 6px 14px rgba(30, 64, 175, 0.14);
 }
 
 .eq-meta {
@@ -279,7 +279,7 @@ function submit() {
   background: #fff;
   padding: 4px 11px;
   border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(16, 42, 33, 0.06);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
 .row-2 {

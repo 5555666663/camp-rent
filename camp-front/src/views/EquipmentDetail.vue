@@ -141,7 +141,7 @@ function goOrder() {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(145deg, #e9fbf2 0%, #d4f5e6 45%, #bfeed7 100%);
+  background: #eff6ff;
 }
 
 .detail-img:hover {
@@ -156,7 +156,7 @@ function goOrder() {
 
 .detail-img-placeholder span {
   font-size: 110px;
-  filter: drop-shadow(0 16px 28px rgba(22, 184, 118, 0.28));
+  filter: drop-shadow(0 16px 28px rgba(30, 64, 175, 0.28));
 }
 
 .img-chip {
@@ -170,7 +170,7 @@ function goOrder() {
   color: var(--camp-primary-dark);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(16, 42, 33, 0.1);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
 }
 
 /* 信息 */
@@ -196,12 +196,12 @@ function goOrder() {
   height: 24px;
   padding: 0 11px;
   border-radius: 7px;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
+  background: #1e40af;
   color: #fff;
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  box-shadow: 0 5px 14px rgba(22, 184, 118, 0.2);
+  box-shadow: 0 5px 14px rgba(30, 64, 175, 0.2);
 }
 
 .spec-text {
@@ -233,8 +233,8 @@ function goOrder() {
   margin: 24px 0 20px;
   padding: 18px 20px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #f0fdf7 0%, #e6faf0 100%);
-  border: 1px solid rgba(22, 184, 118, 0.14);
+  background: #f8fafc;
+  border: 1px solid rgba(30, 64, 175, 0.14);
 }
 
 .price-main {

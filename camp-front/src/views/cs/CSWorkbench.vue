@@ -281,7 +281,7 @@ onMounted(() => {
 <style scoped>
 .cs-page {
   min-height: 100vh;
-  background: var(--camp-bg, #f5faf7);
+  background: var(--camp-bg, #f8fafc);
 }
 
 .cs-header {
@@ -311,8 +311,8 @@ onMounted(() => {
   display: grid;
   place-items: center;
   font-size: 20px;
-  background: linear-gradient(135deg, #16b876, #3ddc97);
-  box-shadow: 0 8px 18px rgba(22, 184, 118, 0.28);
+  background: #1e40af;
+  box-shadow: 0 8px 18px rgba(30, 64, 175, 0.28);
 }
 
 .brand-name {

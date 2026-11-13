@@ -201,7 +201,7 @@ const riskIcon = computed(() => {
 const coverStyle = (img) => {
   return img
     ? { backgroundImage: `url(${img})` }
-    : { background: 'linear-gradient(135deg, #d9f5e6, #b7ecd4)' }
+    : { background: '#dbeafe' }
 }
 
 /** 跳转套餐详情页 */
@@ -251,17 +251,17 @@ const goOrder = (equipmentId) => {
 }
 
 .risk-safe {
-  background: linear-gradient(135deg, #eafaf1, #f4fdf8);
-  border-color: rgba(22, 184, 118, 0.25);
+  background: #eff6ff;
+  border-color: rgba(30, 64, 175, 0.25);
 }
 
 .risk-warn {
-  background: linear-gradient(135deg, #fff7e8, #fffdf7);
+  background: #fff7e8;
   border-color: rgba(230, 162, 60, 0.3);
 }
 
 .risk-danger {
-  background: linear-gradient(135deg, #fdecec, #fff6f6);
+  background: #fdecec;
   border-color: rgba(220, 53, 69, 0.3);
 }
 
@@ -281,8 +281,8 @@ const goOrder = (equipmentId) => {
   margin-left: 12px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--camp-primary-dark, #0e9b62);
-  background: rgba(22, 184, 118, 0.1);
+  color: var(--camp-primary-dark, #1e40af);
+  background: rgba(30, 64, 175, 0.1);
   padding: 2px 10px;
   border-radius: 999px;
 }
@@ -341,7 +341,7 @@ const goOrder = (equipmentId) => {
   color: var(--camp-ink, #0f1f1a);
   margin: 0 0 14px;
   padding-left: 12px;
-  border-left: 4px solid var(--camp-primary, #16b876);
+  border-left: 4px solid var(--camp-primary, #1e40af);
   line-height: 1.2;
 }
 
@@ -418,8 +418,8 @@ const goOrder = (equipmentId) => {
 
 .pkg-item {
   font-size: 12px;
-  color: var(--camp-primary-dark, #0e9b62);
-  background: var(--camp-primary-soft, #e9fbf2);
+  color: var(--camp-primary-dark, #1e40af);
+  background: var(--camp-primary-soft, #eff6ff);
   padding: 2px 8px;
   border-radius: 6px;
 }
@@ -451,7 +451,7 @@ const goOrder = (equipmentId) => {
 .pkg-link {
   font-size: 13px;
   font-weight: 600;
-  color: var(--camp-primary, #16b876);
+  color: var(--camp-primary, #1e40af);
 }
 
 /* 附加装备 */
@@ -504,7 +504,7 @@ const goOrder = (equipmentId) => {
 
 .add-link {
   font-size: 13px;
-  color: var(--camp-primary, #16b876);
+  color: var(--camp-primary, #1e40af);
   font-weight: 600;
 }
 

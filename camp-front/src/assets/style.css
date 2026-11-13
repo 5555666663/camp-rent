@@ -1,63 +1,69 @@
 /* ============================================================
-   全局设计系统：现代清新露营风（薄荷绿 + 白 + 柔和阴影）
+   全局设计系统：企业简洁风（Corporate Clean）
    ------------------------------------------------------------
-   设计要点：
-   1. 以「薄荷绿」为主色，配合大圆角、柔和多层阴影，营造现代感
-   2. Element Plus 组件统一改造（按钮、输入框、卡片、表格、弹窗、分页）
-   3. 保留原有的 .page-container / .camp-card / .page-title 语义类名
+   设计原则：
+   1. 克制的商务蓝：全站只用一个主蓝 #1e40af，主色与链接同源
+   2. 层次靠 1px 描边 + 两级阴影建立，不使用重阴影与渐变
+   3. hover 上浮 2px、active 缩放 0.98，动效 ≤ 200ms ease-out
+   4. 焦点环必须带 2px offset（无障碍底线）
+   5. 圆角：卡片 12px / 按钮 8px / 输入 8px / 标签 999px
+   6. 保留原有语义类名（.page-container / .page-title / .camp-card / .float-bar）
    ============================================================ */
 
 /* ---------- 1. 设计变量 ---------- */
 :root {
-  /* 品牌色 */
-  --camp-primary: #16b876;
-  --camp-primary-2: #3ddc97;
-  --camp-primary-dark: #0e9b62;
-  --camp-primary-soft: #e9fbf2;
-  --camp-primary-softer: #f3fdf8;
-  --camp-accent: #ff8a3d;
+  /* 品牌 / 语义色 */
+  --camp-primary: #1e40af;
+  --camp-primary-2: #3b82f6;
+  --camp-primary-dark: #1e3a8a;
+  --camp-primary-soft: #eff6ff;
+  --camp-primary-softer: #f8fafc;
+  --camp-accent: #f59e0b;
+  --camp-success: #10b981;
+  --camp-danger: #dc2626;
 
   /* 文字 / 中性色 */
-  --camp-ink: #0f1f1a;
-  --camp-ink-2: #43564f;
-  --camp-muted: #8b9a94;
-  --camp-line: rgba(15, 31, 26, 0.075);
-  --camp-bg: #f5faf7;
+  --camp-ink: #0f172a;
+  --camp-ink-2: #334155;
+  --camp-muted: #64748b;
+  --camp-line: #e5e7eb;
+  --camp-line-strong: #d1d5db;
+  --camp-bg: #f8fafc;
   --camp-surface: #ffffff;
 
   /* 圆角 */
-  --camp-radius-sm: 10px;
-  --camp-radius: 16px;
-  --camp-radius-lg: 22px;
+  --camp-radius-sm: 8px;
+  --camp-radius: 12px;
+  --camp-radius-lg: 12px;
 
-  /* 阴影（多层柔和投影） */
-  --camp-shadow-sm: 0 1px 2px rgba(16, 42, 33, 0.04), 0 6px 16px rgba(16, 42, 33, 0.05);
-  --camp-shadow-md: 0 2px 6px rgba(16, 42, 33, 0.05), 0 14px 36px rgba(16, 42, 33, 0.08);
-  --camp-shadow-lg: 0 8px 24px rgba(16, 42, 33, 0.08), 0 28px 64px rgba(16, 42, 33, 0.12);
+  /* 阴影（rest / hover 两级） */
+  --camp-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --camp-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --camp-shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.08);
 
   /* ---------- Element Plus 主题覆盖 ---------- */
-  --el-color-primary: #16b876;
-  --el-color-primary-light-3: #57cf9f;
-  --el-color-primary-light-5: #8ddfbd;
-  --el-color-primary-light-7: #c2efd9;
-  --el-color-primary-light-8: #d8f5e7;
-  --el-color-primary-light-9: #eefcf5;
-  --el-color-primary-dark-2: #0e9b62;
+  --el-color-primary: #1e40af;
+  --el-color-primary-light-3: #4b6ecb;
+  --el-color-primary-light-5: #7d95dc;
+  --el-color-primary-light-7: #b0beea;
+  --el-color-primary-light-8: #cbd5f2;
+  --el-color-primary-light-9: #eff6ff;
+  --el-color-primary-dark-2: #1e3a8a;
 
-  --el-color-danger: #f2555a;
-  --el-color-warning: #f7a23b;
-  --el-color-success: #16b876;
+  --el-color-danger: #dc2626;
+  --el-color-warning: #f59e0b;
+  --el-color-success: #10b981;
 
-  --el-border-radius-base: 10px;
+  --el-border-radius-base: 8px;
   --el-border-radius-small: 8px;
-  --el-font-family: 'Inter', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei',
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --el-text-color-primary: #0f1f1a;
-  --el-text-color-regular: #43564f;
-  --el-border-color: rgba(15, 31, 26, 0.1);
-  --el-border-color-light: rgba(15, 31, 26, 0.07);
+  --el-font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Roboto, sans-serif;
+  --el-text-color-primary: #0f172a;
+  --el-text-color-regular: #334155;
+  --el-border-color: #e5e7eb;
+  --el-border-color-light: #eef2f7;
   --el-fill-color-blank: #ffffff;
-  --el-box-shadow-light: 0 2px 6px rgba(16, 42, 33, 0.05), 0 14px 36px rgba(16, 42, 33, 0.08);
+  --el-box-shadow-light: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
 /* ---------- 2. 基础重置 ---------- */
@@ -76,57 +82,59 @@ body,
   background-color: var(--camp-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: 0.01em;
+  font-size: var(--text-body);
+  line-height: 1.65;
 }
 
 body {
-  /* 淡淡的绿色光晕，让纯色背景不呆板 */
-  background-image:
-    radial-gradient(1200px 600px at 8% -10%, rgba(61, 220, 151, 0.16), transparent 60%),
-    radial-gradient(900px 500px at 100% 0%, rgba(22, 184, 118, 0.1), transparent 55%);
-  background-attachment: fixed;
+  background-image: none;
 }
 
 ::selection {
-  background: rgba(22, 184, 118, 0.22);
+  background: rgba(59, 130, 246, 0.18);
 }
 
 a {
-  color: var(--camp-primary-dark);
+  color: var(--camp-primary);
   text-decoration: none;
+  transition: color 150ms ease-out;
+}
+
+a:hover {
+  color: var(--camp-primary-dark);
+}
+
+/* 全局焦点环：2px ring + 2px offset */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--camp-bg), 0 0 0 4px var(--camp-primary-2);
+  border-radius: var(--camp-radius-sm);
 }
 
 /* ---------- 3. 通用布局类（各页面复用） ---------- */
 .page-container {
-  max-width: 1240px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 32px 24px 64px;
 }
 
 .page-title {
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   color: var(--camp-ink);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.page-title::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
-  box-shadow: 0 0 0 5px rgba(22, 184, 118, 0.12);
-}
-
 .page-subtitle {
   font-size: 14px;
+  line-height: 1.6;
   color: var(--camp-muted);
-  margin: 0 0 28px 20px;
+  margin: 0 0 28px;
 }
 
 /* 通用卡片 */
@@ -135,75 +143,96 @@ a {
   border: 1px solid var(--camp-line);
   border-radius: var(--camp-radius);
   box-shadow: var(--camp-shadow-sm);
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
 }
 
 .camp-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: var(--camp-shadow-md);
 }
 
 /* 悬浮工具栏（筛选栏等） */
 .float-bar {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: var(--camp-surface);
   border: 1px solid var(--camp-line);
   border-radius: var(--camp-radius);
   box-shadow: var(--camp-shadow-sm);
-  padding: 14px 16px;
+  padding: 16px;
 }
 
 /* ---------- 4. Element Plus 组件细节改造 ---------- */
 
-/* 主按钮：渐变 + 柔光 */
+/* 按钮：纯色填充 + 8px 圆角，hover 上浮 2px，active 缩放 0.98 */
 .el-button {
-  font-weight: 600;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  font-weight: 500;
+  border-radius: var(--camp-radius-sm);
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out, background-color 150ms ease-out,
+    border-color 150ms ease-out;
+}
+
+.el-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--camp-bg), 0 0 0 4px var(--camp-primary-2);
 }
 
 .el-button--primary:not(.is-disabled) {
-  background-image: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
-  border: none;
-  box-shadow: 0 6px 16px rgba(22, 184, 118, 0.26);
+  background-color: var(--camp-primary);
+  background-image: none;
+  border-color: var(--camp-primary);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
 .el-button--primary:not(.is-disabled):hover {
-  background-image: linear-gradient(135deg, var(--camp-primary-dark), var(--camp-primary));
-  box-shadow: 0 10px 24px rgba(22, 184, 118, 0.34);
-  transform: translateY(-1px);
+  background-color: #1a3a9e;
+  background-image: none;
+  border-color: #1a3a9e;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
 }
 
 .el-button--primary:not(.is-disabled):active {
-  transform: translateY(0);
-  box-shadow: 0 4px 10px rgba(22, 184, 118, 0.26);
+  background-color: #16307f;
+  transform: scale(0.98);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.el-button--default:not(.is-disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.el-button--default:not(.is-disabled):active {
+  transform: scale(0.98);
+  box-shadow: none;
 }
 
 .el-button.is-round {
   border-radius: 999px;
 }
 
-/* 输入框 / 选择器：更柔和的底色与聚焦光圈 */
+/* 输入框 / 选择器：白底 1px 描边，聚焦蓝边 + 2px 偏移焦点环 */
 .el-input__wrapper,
 .el-select__wrapper,
 .el-textarea__inner {
   border-radius: var(--camp-radius-sm) !important;
-  box-shadow: 0 0 0 1px var(--camp-line) inset !important;
-  background-color: #fbfdfc !important;
-  transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 0 0 1px var(--camp-line-strong) inset !important;
+  background-color: #ffffff !important;
+  transition: box-shadow 150ms ease-out;
 }
 
 .el-input__wrapper:hover,
 .el-select__wrapper:hover,
 .el-textarea__inner:hover {
-  box-shadow: 0 0 0 1px rgba(22, 184, 118, 0.3) inset !important;
+  box-shadow: 0 0 0 1px #94a3b8 inset !important;
 }
 
 .el-input__wrapper.is-focus,
 .el-select__wrapper.is-focused,
 .el-textarea__inner:focus {
   background-color: #fff !important;
-  box-shadow: 0 0 0 1px var(--camp-primary) inset, 0 0 0 4px rgba(22, 184, 118, 0.12) !important;
+  box-shadow: 0 0 0 1px var(--camp-primary) inset,
+    0 0 0 2px var(--camp-bg),
+    0 0 0 4px var(--camp-primary-2) !important;
 }
 
 /* 卡片 / 弹窗 / 抽屉 */
@@ -214,103 +243,136 @@ a {
 }
 
 .el-dialog {
-  border-radius: var(--camp-radius-lg);
-  box-shadow: var(--camp-shadow-lg);
-  padding: 8px 4px;
+  border-radius: var(--camp-radius);
+  box-shadow: var(--camp-shadow-md);
   overflow: hidden;
 }
 
 .el-dialog__header {
-  padding: 18px 24px 6px;
-  font-weight: 700;
+  padding: 20px 24px 8px;
+  font-weight: 600;
 }
 
 .el-dialog__body {
-  padding: 12px 24px 8px;
+  padding: 8px 24px;
 }
 
 .el-dialog__footer {
-  padding: 8px 24px 20px;
+  padding: 12px 24px 20px;
 }
 
-/* 表格：去掉重边框，强调表头 */
+/* 表格：浅灰表头 + 1px 描边 */
 .el-table {
   border-radius: var(--camp-radius);
   overflow: hidden;
-  --el-table-border-color: rgba(15, 31, 26, 0.06);
+  --el-table-border-color: var(--camp-line);
 }
 
 .el-table th.el-table__cell {
-  background: #f4fbf7 !important;
-  color: var(--camp-ink-2);
-  font-weight: 700;
+  background: #f8fafc !important;
+  color: #334155;
+  font-weight: 500;
   font-size: 13px;
 }
 
 .el-table .el-table__row {
-  transition: background 0.18s ease;
+  transition: background-color 150ms ease-out;
 }
 
 .el-table .el-table__row:hover > td.el-table__cell {
-  background: #f7fdfa !important;
+  background: #f8fafc !important;
 }
 
-/* 标签 */
+/* 标签：全圆角、12px、500 字重 */
 .el-tag {
   border-radius: 999px;
-  font-weight: 600;
-  border: none;
+  font-weight: 500;
+  font-size: 12px;
+  border: 1px solid var(--camp-line);
   padding: 0 10px;
+  background-color: #f8fafc;
+  color: #334155;
+}
+
+.el-tag--primary {
+  background-color: var(--camp-primary-soft);
+  border-color: #dbeafe;
+  color: var(--camp-primary);
+}
+
+.el-tag--success {
+  background-color: #ecfdf5;
+  border-color: #d1fae5;
+  color: #047857;
+}
+
+.el-tag--danger {
+  background-color: #fef2f2;
+  border-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.el-tag--warning {
+  background-color: #fffbeb;
+  border-color: #fef3c7;
+  color: #b45309;
 }
 
 /* 分页 */
 .el-pagination {
-  --el-pagination-button-bg-color: #fff;
+  --el-pagination-button-bg-color: #ffffff;
   gap: 4px;
 }
 
 .el-pagination.is-background .el-pager li {
-  border-radius: 10px;
-  font-weight: 600;
+  border-radius: var(--camp-radius-sm);
+  font-weight: 500;
+  border: 1px solid var(--camp-line);
+  background: #ffffff;
+  transition: all 150ms ease-out;
 }
 
 .el-pagination.is-background .el-pager li.is-active {
-  background-image: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
-  box-shadow: 0 6px 14px rgba(22, 184, 118, 0.28);
+  background-color: var(--camp-primary);
+  background-image: none;
+  border-color: var(--camp-primary);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
 /* 下拉菜单 */
 .el-dropdown__popper.el-popper,
 .el-select__popper.el-popper {
-  border-radius: 14px !important;
+  border-radius: var(--camp-radius) !important;
   border: 1px solid var(--camp-line) !important;
   box-shadow: var(--camp-shadow-md) !important;
 }
 
 /* 消息提示 */
 .el-message {
-  border-radius: 999px;
+  border-radius: var(--camp-radius-sm);
   box-shadow: var(--camp-shadow-md);
   border: 1px solid var(--camp-line);
 }
 
-/* 侧边菜单（后台） */
+/* 侧边菜单（后台）：浅色底，选中为浅蓝 + 蓝字 */
 .el-menu-item {
-  border-radius: 10px;
-  margin: 3px 10px;
-  height: 46px;
-  line-height: 46px;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  border-radius: var(--camp-radius-sm);
+  margin: 2px 8px;
+  height: 44px;
+  line-height: 44px;
+  font-weight: 500;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
 }
 
 .el-menu-item:hover {
-  background: rgba(255, 255, 255, 0.07) !important;
+  background: #f1f5f9 !important;
 }
 
 .el-menu-item.is-active {
-  background: linear-gradient(135deg, rgba(22, 184, 118, 0.95), rgba(61, 220, 151, 0.85)) !important;
-  color: #fff !important;
-  box-shadow: 0 8px 20px rgba(22, 184, 118, 0.3);
+  background: var(--camp-primary-soft) !important;
+  color: var(--camp-primary) !important;
+  box-shadow: none;
 }
 
 /* ---------- 5. 滚动条 ---------- */
@@ -320,14 +382,14 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(15, 31, 26, 0.14);
+  background: #cbd5e1;
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(15, 31, 26, 0.26);
+  background: #94a3b8;
   background-clip: content-box;
 }
 
@@ -335,11 +397,11 @@ a {
   background: transparent;
 }
 
-/* ---------- 6. 入场动画 ---------- */
+/* ---------- 6. 入场动画（≤200ms） ---------- */
 @keyframes campFadeUp {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -348,5 +410,16 @@ a {
 }
 
 .fade-up {
-  animation: campFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: campFadeUp 200ms ease-out both;
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

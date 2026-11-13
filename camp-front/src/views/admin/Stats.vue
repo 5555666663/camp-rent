@@ -132,7 +132,7 @@ function renderStore(data) {
       itemGap: 18,
       textStyle: { color: '#43564f', fontSize: 12 }
     },
-    color: ['#16b876', '#3ddc97', '#7aa7ff', '#ffb547', '#ff8a8f', '#a78bfa'],
+    color: ['#1e40af', '#3b82f6', '#60a5fa', '#f59e0b', '#ef4444', '#8b5cf6'],
     series: [
       {
         type: 'pie',
@@ -209,11 +209,11 @@ function renderEquip(data) {
         itemStyle: {
           borderRadius: 99,
           color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-            { offset: 0, color: '#16b876' },
+            { offset: 0, color: '#1e40af' },
             { offset: 1, color: '#57e0a8' }
           ])
         },
-        label: { show: true, position: 'right', color: '#0e9b62', fontWeight: 700, fontSize: 11.5 }
+        label: { show: true, position: 'right', color: '#1e40af', fontWeight: 700, fontSize: 11.5 }
       }
     ]
   })
@@ -250,11 +250,11 @@ function renderTrend(data) {
         lineStyle: {
           width: 3,
           color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-            { offset: 0, color: '#16b876' },
-            { offset: 1, color: '#3ddc97' }
+            { offset: 0, color: '#1e40af' },
+            { offset: 1, color: '#3b82f6' }
           ])
         },
-        itemStyle: { color: '#16b876', borderColor: '#fff', borderWidth: 2 },
+        itemStyle: { color: '#1e40af', borderColor: '#fff', borderWidth: 2 },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: 'rgba(22,184,118,0.28)' },
@@ -317,15 +317,15 @@ function renderTrend(data) {
 }
 
 .kpi-icon.green {
-  background: linear-gradient(135deg, #e6faf0, #d1f5e4);
+  background: #eff6ff;
 }
 
 .kpi-icon.blue {
-  background: linear-gradient(135deg, #eaf1ff, #dbe7ff);
+  background: #eff6ff;
 }
 
 .kpi-icon.orange {
-  background: linear-gradient(135deg, #fff3e6, #ffe6cc);
+  background: #fef3c7;
 }
 
 .kpi-body {
@@ -349,22 +349,7 @@ function renderTrend(data) {
 }
 
 .kpi-glow {
-  position: absolute;
-  right: -40px;
-  bottom: -60px;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(22, 184, 118, 0.14), transparent 65%);
-  pointer-events: none;
-}
-
-.kpi-glow.blue {
-  background: radial-gradient(circle, rgba(75, 123, 236, 0.12), transparent 65%);
-}
-
-.kpi-glow.orange {
-  background: radial-gradient(circle, rgba(255, 138, 61, 0.14), transparent 65%);
+  display: none;
 }
 
 /* 图表 */
