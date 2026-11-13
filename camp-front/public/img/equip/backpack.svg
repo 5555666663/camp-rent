@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs><linearGradient id="bgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f2f9f7"/><stop offset="1" stop-color="#dceee7"/></linearGradient></defs>
+  <rect width="400" height="300" fill="url(#bgb)"/>
+  <ellipse cx="200" cy="250" rx="72" ry="12" fill="#0f1f1a" opacity="0.07"/>
+  <path d="M158 96h84a16 16 0 0 1 16 16v104a14 14 0 0 1-14 14h-88a14 14 0 0 1-14-14V112a16 16 0 0 1 16-16z" fill="#e9f4ee" stroke="#8fb8a4" stroke-width="2"/>
+  <path d="M176 96c0-12 10-20 24-20s24 8 24 20" fill="none" stroke="#16b876" stroke-width="6" stroke-linecap="round"/>
+  <rect x="150" y="150" width="100" height="46" rx="8" fill="#3ddc97" opacity="0.55"/>
+  <rect x="168" y="206" width="64" height="10" rx="5" fill="#a9c9b8"/>
+  <text x="200" y="272" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="14" fill="#43564f" text-anchor="middle">徒步双肩包</text>
+</svg>

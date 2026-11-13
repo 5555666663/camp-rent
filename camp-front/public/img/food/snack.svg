@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff6f0"/><stop offset="1" stop-color="#f6e3d6"/>
+    </linearGradient>
+    <linearGradient id="bag5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd9a8"/><stop offset="1" stop-color="#f0b678"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg5)"/>
+  <ellipse cx="200" cy="250" rx="98" ry="13" fill="#0f1f1a" opacity="0.08"/>
+  <path d="M132 118h136l-10 118a16 16 0 0 1-16 14H158a16 16 0 0 1-16-14z" fill="url(#bag5)" stroke="#d69a5e" stroke-width="2"/>
+  <path d="M132 118h136l-6-14H138z" fill="#ffe7c6" stroke="#d69a5e" stroke-width="2"/>
+  <rect x="164" y="150" width="72" height="46" rx="8" fill="#fff8ee" opacity="0.92" stroke="#e0b489" stroke-width="2"/>
+  <circle cx="182" cy="173" r="7" fill="#e08a4a" opacity="0.75"/>
+  <circle cx="202" cy="167" r="6" fill="#c9692f" opacity="0.7"/>
+  <circle cx="220" cy="177" r="5" fill="#e08a4a" opacity="0.6"/>
+  <text x="200" y="272" font-family="PingFang SC,Microsoft YaHei,sans-serif" font-size="14" fill="#43564f" text-anchor="middle">便携零食 · 混合装</text>
+</svg>

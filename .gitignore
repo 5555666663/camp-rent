@@ -1,0 +1,23 @@
+# ---- 依赖与构建产物 ----
+node_modules/
+dist/
+target/
+out/
+
+# ---- IDE ----
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# ---- 日志与临时文件 ----
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# ---- 本地环境 ----
+.env
+.env.local

@@ -1,0 +1,71 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: camp-back
+  # MySQL 数据源配置
+  datasource:
+    # 注意：characterEncoding 必须写 UTF-8（Connector/J 8 不接受 utf8mb4 作为 Java 字符集名，UTF-8 会自动映射为 utf8mb4）
+    url: jdbc:mysql://localhost:3306/camp_rent?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 373394589
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    # 下划线转驼峰映射
+    map-underscore-to-camel-case: true
+    # SQL 日志（开发调试用）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 主键策略：数据库自增
+      id-type: auto
+      # 逻辑删除字段（本项目未使用逻辑删除，可忽略）
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT 配置
+jwt:
+  # 签名密钥（生产环境请务必修改为随机长字符串）
+  secret: camp-rent-secret-key-please-change-this-to-a-long-random-string-2026
+  # token 过期时间（毫秒），默认 24 小时
+  expire: 86400000
+
+# 天气接口配置（Open-Meteo，免费无需 Key）
+weather:
+  # 天气预报接口地址
+  api-base: https://api.open-meteo.com
+  # 地名解析接口地址
+  geo-base: https://geocoding-api.open-meteo.com
+  # 超时时间（毫秒）
+  timeout: 8000
+
+# 大模型配置（OpenAI 兼容协议，可接 DeepSeek / 通义千问 / 智谱 等）
+# 使用步骤：
+#   1. 到对应平台申请 API Key
+#   2. 把 enabled 改成 true，api-key 填自己的 Key
+#   3. 如不是 DeepSeek，改 base-url 与 model 即可
+# 未配置 Key 时系统自动使用本地规则引擎，功能照常可用
+ai:
+  enabled: false
+  base-url: https://api.deepseek.com
+  api-key:
+  model: deepseek-chat
+  timeout: 20000
+
+# 高德 Web 服务（服务端 Key，仅用于后端中转调用，不下发到前端）
+# 说明：就近网点距离计算使用后端 Haversine 公式，本身不依赖该 Key；
+#      此处预留 Key，便于扩展逆地理编码 / 路径规划等能力
+amap:
+  web-key: 45bd163a2a01a9cc8aaffa909e8ec122
+  # 高德 Web 服务接口地址
+  base-url: https://restapi.amap.com
+  timeout: 5000
+

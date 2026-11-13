@@ -1,0 +1,352 @@
+/* ============================================================
+   全局设计系统：现代清新露营风（薄荷绿 + 白 + 柔和阴影）
+   ------------------------------------------------------------
+   设计要点：
+   1. 以「薄荷绿」为主色，配合大圆角、柔和多层阴影，营造现代感
+   2. Element Plus 组件统一改造（按钮、输入框、卡片、表格、弹窗、分页）
+   3. 保留原有的 .page-container / .camp-card / .page-title 语义类名
+   ============================================================ */
+
+/* ---------- 1. 设计变量 ---------- */
+:root {
+  /* 品牌色 */
+  --camp-primary: #16b876;
+  --camp-primary-2: #3ddc97;
+  --camp-primary-dark: #0e9b62;
+  --camp-primary-soft: #e9fbf2;
+  --camp-primary-softer: #f3fdf8;
+  --camp-accent: #ff8a3d;
+
+  /* 文字 / 中性色 */
+  --camp-ink: #0f1f1a;
+  --camp-ink-2: #43564f;
+  --camp-muted: #8b9a94;
+  --camp-line: rgba(15, 31, 26, 0.075);
+  --camp-bg: #f5faf7;
+  --camp-surface: #ffffff;
+
+  /* 圆角 */
+  --camp-radius-sm: 10px;
+  --camp-radius: 16px;
+  --camp-radius-lg: 22px;
+
+  /* 阴影（多层柔和投影） */
+  --camp-shadow-sm: 0 1px 2px rgba(16, 42, 33, 0.04), 0 6px 16px rgba(16, 42, 33, 0.05);
+  --camp-shadow-md: 0 2px 6px rgba(16, 42, 33, 0.05), 0 14px 36px rgba(16, 42, 33, 0.08);
+  --camp-shadow-lg: 0 8px 24px rgba(16, 42, 33, 0.08), 0 28px 64px rgba(16, 42, 33, 0.12);
+
+  /* ---------- Element Plus 主题覆盖 ---------- */
+  --el-color-primary: #16b876;
+  --el-color-primary-light-3: #57cf9f;
+  --el-color-primary-light-5: #8ddfbd;
+  --el-color-primary-light-7: #c2efd9;
+  --el-color-primary-light-8: #d8f5e7;
+  --el-color-primary-light-9: #eefcf5;
+  --el-color-primary-dark-2: #0e9b62;
+
+  --el-color-danger: #f2555a;
+  --el-color-warning: #f7a23b;
+  --el-color-success: #16b876;
+
+  --el-border-radius-base: 10px;
+  --el-border-radius-small: 8px;
+  --el-font-family: 'Inter', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei',
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --el-text-color-primary: #0f1f1a;
+  --el-text-color-regular: #43564f;
+  --el-border-color: rgba(15, 31, 26, 0.1);
+  --el-border-color-light: rgba(15, 31, 26, 0.07);
+  --el-fill-color-blank: #ffffff;
+  --el-box-shadow-light: 0 2px 6px rgba(16, 42, 33, 0.05), 0 14px 36px rgba(16, 42, 33, 0.08);
+}
+
+/* ---------- 2. 基础重置 ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  font-family: var(--el-font-family);
+  color: var(--camp-ink);
+  background-color: var(--camp-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+}
+
+body {
+  /* 淡淡的绿色光晕，让纯色背景不呆板 */
+  background-image:
+    radial-gradient(1200px 600px at 8% -10%, rgba(61, 220, 151, 0.16), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(22, 184, 118, 0.1), transparent 55%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(22, 184, 118, 0.22);
+}
+
+a {
+  color: var(--camp-primary-dark);
+  text-decoration: none;
+}
+
+/* ---------- 3. 通用布局类（各页面复用） ---------- */
+.page-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--camp-ink);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-title::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
+  box-shadow: 0 0 0 5px rgba(22, 184, 118, 0.12);
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--camp-muted);
+  margin: 0 0 28px 20px;
+}
+
+/* 通用卡片 */
+.camp-card {
+  background: var(--camp-surface);
+  border: 1px solid var(--camp-line);
+  border-radius: var(--camp-radius);
+  box-shadow: var(--camp-shadow-sm);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease;
+}
+
+.camp-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--camp-shadow-md);
+}
+
+/* 悬浮工具栏（筛选栏等） */
+.float-bar {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--camp-line);
+  border-radius: var(--camp-radius);
+  box-shadow: var(--camp-shadow-sm);
+  padding: 14px 16px;
+}
+
+/* ---------- 4. Element Plus 组件细节改造 ---------- */
+
+/* 主按钮：渐变 + 柔光 */
+.el-button {
+  font-weight: 600;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.el-button--primary:not(.is-disabled) {
+  background-image: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
+  border: none;
+  box-shadow: 0 6px 16px rgba(22, 184, 118, 0.26);
+}
+
+.el-button--primary:not(.is-disabled):hover {
+  background-image: linear-gradient(135deg, var(--camp-primary-dark), var(--camp-primary));
+  box-shadow: 0 10px 24px rgba(22, 184, 118, 0.34);
+  transform: translateY(-1px);
+}
+
+.el-button--primary:not(.is-disabled):active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(22, 184, 118, 0.26);
+}
+
+.el-button.is-round {
+  border-radius: 999px;
+}
+
+/* 输入框 / 选择器：更柔和的底色与聚焦光圈 */
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  border-radius: var(--camp-radius-sm) !important;
+  box-shadow: 0 0 0 1px var(--camp-line) inset !important;
+  background-color: #fbfdfc !important;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.el-input__wrapper:hover,
+.el-select__wrapper:hover,
+.el-textarea__inner:hover {
+  box-shadow: 0 0 0 1px rgba(22, 184, 118, 0.3) inset !important;
+}
+
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-textarea__inner:focus {
+  background-color: #fff !important;
+  box-shadow: 0 0 0 1px var(--camp-primary) inset, 0 0 0 4px rgba(22, 184, 118, 0.12) !important;
+}
+
+/* 卡片 / 弹窗 / 抽屉 */
+.el-card {
+  border-radius: var(--camp-radius);
+  border: 1px solid var(--camp-line);
+  box-shadow: var(--camp-shadow-sm);
+}
+
+.el-dialog {
+  border-radius: var(--camp-radius-lg);
+  box-shadow: var(--camp-shadow-lg);
+  padding: 8px 4px;
+  overflow: hidden;
+}
+
+.el-dialog__header {
+  padding: 18px 24px 6px;
+  font-weight: 700;
+}
+
+.el-dialog__body {
+  padding: 12px 24px 8px;
+}
+
+.el-dialog__footer {
+  padding: 8px 24px 20px;
+}
+
+/* 表格：去掉重边框，强调表头 */
+.el-table {
+  border-radius: var(--camp-radius);
+  overflow: hidden;
+  --el-table-border-color: rgba(15, 31, 26, 0.06);
+}
+
+.el-table th.el-table__cell {
+  background: #f4fbf7 !important;
+  color: var(--camp-ink-2);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.el-table .el-table__row {
+  transition: background 0.18s ease;
+}
+
+.el-table .el-table__row:hover > td.el-table__cell {
+  background: #f7fdfa !important;
+}
+
+/* 标签 */
+.el-tag {
+  border-radius: 999px;
+  font-weight: 600;
+  border: none;
+  padding: 0 10px;
+}
+
+/* 分页 */
+.el-pagination {
+  --el-pagination-button-bg-color: #fff;
+  gap: 4px;
+}
+
+.el-pagination.is-background .el-pager li {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.el-pagination.is-background .el-pager li.is-active {
+  background-image: linear-gradient(135deg, var(--camp-primary), var(--camp-primary-2));
+  box-shadow: 0 6px 14px rgba(22, 184, 118, 0.28);
+}
+
+/* 下拉菜单 */
+.el-dropdown__popper.el-popper,
+.el-select__popper.el-popper {
+  border-radius: 14px !important;
+  border: 1px solid var(--camp-line) !important;
+  box-shadow: var(--camp-shadow-md) !important;
+}
+
+/* 消息提示 */
+.el-message {
+  border-radius: 999px;
+  box-shadow: var(--camp-shadow-md);
+  border: 1px solid var(--camp-line);
+}
+
+/* 侧边菜单（后台） */
+.el-menu-item {
+  border-radius: 10px;
+  margin: 3px 10px;
+  height: 46px;
+  line-height: 46px;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.el-menu-item:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+}
+
+.el-menu-item.is-active {
+  background: linear-gradient(135deg, rgba(22, 184, 118, 0.95), rgba(61, 220, 151, 0.85)) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(22, 184, 118, 0.3);
+}
+
+/* ---------- 5. 滚动条 ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(15, 31, 26, 0.14);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 31, 26, 0.26);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- 6. 入场动画 ---------- */
+@keyframes campFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: campFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
