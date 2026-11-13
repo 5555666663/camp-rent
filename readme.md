@@ -369,4 +369,33 @@ mysql -uroot -p373394589 --default-character-set=utf8mb4 < sql/update-rbac.sql
 - **客服**：只能处理订单与售后，不能修改网点与商品基础信息
 - **普通用户**：定位找就近网点、查看网点库存、挑选装备与食品、AI 组套、自定义套餐、下单
 
+## 十二、定位优化（扩展功能）
+
+### 1. 三级定位策略
+
+| 级别 | 方式 | 精度 | 说明 |
+| --- | --- | --- | --- |
+| ① 主用 | 浏览器高精度定位 | 米级 | `getCurrentPosition` 使用 `enableHighAccuracy: true`、`maximumAge: 0`，优先 GPS / Wi-Fi |
+| ② 兜底 | 后端 IP 定位 `GET /api/location/ip` | 城市级 | 高德 IP 定位（需「Web服务」类型 Key）→ pconline 免费 IP 兜底，结果缓存 10 分钟 |
+| ③ 手动 | 城市筛选 / 地图选点 | 城市级 / 精确 | 页头常驻城市按钮；「在地图上选点」可在地图上点出真实位置，按该点精确重算距离 |
+
+### 2. 接口
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/api/location/ip` | IP 定位，返回 `{province, city, longitude, latitude, source}` |
+| GET | `/api/store/nearest?longitude=&latitude=&city=` | 就近网点；传 `city` 时按该城市网点中心点算距离 |
+
+### 3. 使用说明
+
+- 「就近网点」页点击「获取我的位置」，页面会显示**定位来源与精度**（如「GPS/Wi-Fi 定位 · 精度约 209 m」「按城市筛选 · 襄阳」）。
+- 若定位不准（例如本机开启 VPN、Windows 定位服务关闭导致坐标偏差），可直接点城市按钮，或点「**在地图上选点**」在弹窗地图上点出真实位置，距离立即按该点重算。
+- 想启用 IP 定位：在高德控制台为同一应用**再创建一个「Web服务」类型的 Key**，填入 `application.yml` 的 `amap.web-key`（`Web端(JS API)` 类型的 Key 不能用于 Web 服务接口）。
+- 浏览器 GPS 本身更准的前提：`Windows 设置 → 隐私和安全性 → 定位` 打开「定位服务」并允许桌面应用访问位置，同时关闭 VPN / 代理。
+
+### 4. 涉及文件
+
+- 后端：`controller/LocationController.java`、`service/LocationService(+Impl)`、`vo/IpLocationVO.java`、`StoreController` / `StoreService(+Impl)`（`city` 参数）、`config/SecurityConfig.java`（放行 `GET /api/location/**`）
+- 前端：`views/NearestStore.vue`（三级定位 + 地图选点弹窗）、`api/public.js`（`getIpLocation`）
+
 
