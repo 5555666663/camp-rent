@@ -58,10 +58,18 @@ public class StoreController {
     /**
      * 就近网点列表：按用户经纬度计算距离并升序返回
      * （距离计算在后端完成，前端只传经纬度，保护高德 Key）
+     * 若传 city（定位失败时手动选择城市），则以该城市网点中心点计算距离
      */
     @GetMapping("/nearest")
-    public Result<List<StoreVO>> nearest(@RequestParam BigDecimal longitude,
-                                         @RequestParam BigDecimal latitude) {
+    public Result<List<StoreVO>> nearest(@RequestParam(required = false) BigDecimal longitude,
+                                         @RequestParam(required = false) BigDecimal latitude,
+                                         @RequestParam(required = false) String city) {
+        if ((longitude == null || latitude == null) && city != null && !city.trim().isEmpty()) {
+            return Result.success(storeService.nearestStoresByCity(city.trim()));
+        }
+        if (longitude == null || latitude == null) {
+            return Result.error("缺少定位参数，请传入经纬度或城市");
+        }
         return Result.success(storeService.nearestStores(longitude, latitude));
     }
 

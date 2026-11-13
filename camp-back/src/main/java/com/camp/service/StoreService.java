@@ -25,6 +25,14 @@ public interface StoreService extends IService<Store> {
     List<StoreVO> nearestStores(BigDecimal longitude, BigDecimal latitude);
 
     /**
+     * 按城市查询网点（定位失败时的手动兜底：以该城市所有网点的中心点计算距离）
+     *
+     * @param city 城市名
+     * @return 带距离的网点列表（按距离升序）
+     */
+    List<StoreVO> nearestStoresByCity(String city);
+
+    /**
      * 查询网点详情（含距离、该网点装备与食品库存）
      *
      * @param storeId   网点ID

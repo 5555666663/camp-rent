@@ -43,3 +43,8 @@ export function getEquipmentPage(params) {
 export function getEquipmentDetail(id) {
   return request.get(`/equipment/${id}`)
 }
+
+// IP 定位兜底（浏览器不允许定位时使用，城市级精度）
+export function getIpLocation() {
+  return request.get('/location/ip')
+}

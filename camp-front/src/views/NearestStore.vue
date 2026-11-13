@@ -3,7 +3,12 @@
     <div class="page-head">
       <div>
         <h2 class="page-title">就近网点</h2>
-        <p class="page-subtitle">开启定位，为你按距离由近到远推荐露营网点</p>
+        <p class="page-subtitle">
+          开启定位，为你按距离由近到远推荐露营网点
+          <span v-if="locInfo" class="loc-badge" :class="locInfo.source">
+            {{ locText }}
+          </span>
+        </p>
       </div>
       <el-button type="primary" :loading="locating" @click="locate">
         <el-icon><LocationFilled /></el-icon>
@@ -19,6 +24,22 @@
       show-icon
       style="margin-bottom: 16px"
     />
+
+    <!-- 手动按城市查看（定位不准或不可用时可直接切换） -->
+    <div v-if="cities.length" class="city-picker">
+      <span class="city-label">位置不准或定位失败？直接选择城市：</span>
+      <div class="city-chips">
+        <button
+          v-for="c in cities"
+          :key="c"
+          class="city-chip"
+          :class="{ active: pickedCity === c }"
+          @click="pickCity(c)"
+        >
+          {{ c }}
+        </button>
+      </div>
+    </div>
 
     <div v-if="!stores.length && !locating" class="empty-box">
       <el-icon :size="42" color="#b8ccc2"><LocationInformation /></el-icon>
@@ -50,49 +71,127 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { LocationFilled, LocationInformation, Location, Phone, Clock } from '@element-plus/icons-vue'
-import { getNearestStores } from '@/api/public'
+import { getNearestStores, getIpLocation, getStoreCities } from '@/api/public'
 
 const router = useRouter()
 const stores = ref([])
 const locating = ref(false)
 const error = ref('')
+// 定位信息：{ source: 'gps' | 'ip' | 'city', accuracy: 米, city }
+const locInfo = ref(null)
+// 定位全部失败时展示城市兜底选择
+const cities = ref([])
+const showCityPicker = ref(false)
+const pickedCity = ref('')
+
+const locText = computed(() => {
+  if (!locInfo.value) return ''
+  const src = locInfo.value.source
+  if (src === 'gps') {
+    const acc = locInfo.value.accuracy
+    return acc ? `GPS/Wi-Fi 定位 · 精度约 ${Math.round(acc)} m` : 'GPS/Wi-Fi 定位'
+  }
+  if (src === 'city') return `按城市筛选 · ${locInfo.value.city}`
+  return `IP 定位 · ${locInfo.value.city || '城市级'}`
+})
 
 // 记录上次定位，便于网点详情页复用（避免重复授权）
 const CACHE_KEY = 'camp_location'
 
-function locate() {
-  if (!navigator.geolocation) {
-    error.value = '当前浏览器不支持定位，请在地图页手动浏览网点'
-    return
-  }
+/** 浏览器高精度定位（GPS / Wi-Fi / 基站），拿到最精确的坐标 */
+function browserPosition() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error('当前浏览器不支持定位'))
+      return
+    }
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: true, // 优先 GPS / Wi-Fi，而不是仅用 IP
+      timeout: 12000,
+      maximumAge: 0
+    })
+  })
+}
+
+/** 用坐标查最近网点并记录定位来源 */
+async function applyLocation(longitude, latitude, source, accuracy, city) {
+  localStorage.setItem(CACHE_KEY, JSON.stringify({ longitude, latitude }))
+  stores.value = await getNearestStores({ longitude, latitude })
+  locInfo.value = { source, accuracy, city }
+  showCityPicker.value = false
+}
+
+/** 手动按城市兜底：以该城市网点中心点算距离 */
+async function pickCity(city) {
   locating.value = true
   error.value = ''
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      const longitude = Number(pos.coords.longitude.toFixed(6))
-      const latitude = Number(pos.coords.latitude.toFixed(6))
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ longitude, latitude }))
-      try {
-        stores.value = await getNearestStores({ longitude, latitude })
-      } catch (e) {
-        error.value = '网点查询失败，请稍后再试'
-      } finally {
-        locating.value = false
-      }
-    },
-    (err) => {
-      locating.value = false
-      const msg = err.code === 1 ? '定位权限被拒绝，请在浏览器设置中允许定位' : '定位失败，请检查网络或改用地图页浏览'
-      error.value = msg
-      ElMessage.warning(msg)
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-  )
+  try {
+    pickedCity.value = city
+    stores.value = await getNearestStores({ city })
+    locInfo.value = { source: 'city', city }
+    showCityPicker.value = false
+  } catch (e) {
+    error.value = '网点查询失败，请稍后再试'
+  } finally {
+    locating.value = false
+  }
 }
+
+async function locate() {
+  if (locating.value) return
+  locating.value = true
+  error.value = ''
+  try {
+    // ① 浏览器高精度定位（GPS / Wi-Fi，最准）
+    try {
+      const pos = await browserPosition()
+      await applyLocation(
+        Number(pos.coords.longitude.toFixed(6)),
+        Number(pos.coords.latitude.toFixed(6)),
+        'gps',
+        pos.coords.accuracy
+      )
+      return
+    } catch (e) {
+      // 用户明确拒绝授权时，直接提示，不再走 IP 兜底
+      if (e && e.code === 1) {
+        error.value = '定位权限被拒绝：请点击地址栏左侧的权限图标，允许「位置」后重试；也可直接选择下方城市'
+        showCityPicker.value = true
+        return
+      }
+    }
+
+    // ② IP 定位兜底（城市级精度，无需授权）
+    try {
+      const ip = await getIpLocation()
+      if (ip && ip.longitude) {
+        await applyLocation(ip.longitude, ip.latitude, 'ip', null, ip.city)
+        ElMessage.info(`已使用 IP 定位：${ip.city || '当前城市'}（城市级精度）`)
+        return
+      }
+    } catch (e) {
+      // 忽略，走城市兜底
+    }
+
+    // ③ 城市兜底
+    showCityPicker.value = true
+    error.value = '精确定位不可用：请允许浏览器定位权限，或在下方选择所在城市'
+  } finally {
+    locating.value = false
+  }
+}
+
+onMounted(async () => {
+  try {
+    cities.value = (await getStoreCities()) || []
+  } catch (e) {
+    cities.value = []
+  }
+})
 
 function go(id) {
   router.push(`/store/${id}`)
@@ -200,5 +299,74 @@ function go(id) {
 
 .store-actions {
   flex: none;
+}
+
+/* 城市兜底选择 */
+.city-picker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid var(--camp-line, #e5e7eb);
+  border-radius: var(--camp-radius, 12px);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.city-label {
+  font-size: 13px;
+  color: var(--camp-muted, #64748b);
+}
+
+.city-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.city-chip {
+  border: 1px solid var(--camp-line, #e5e7eb);
+  background: #fff;
+  color: var(--camp-ink-2, #334155);
+  font-size: 13px;
+  line-height: 20px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s ease-out;
+}
+
+.city-chip:hover {
+  border-color: #bfdbfe;
+  color: var(--camp-primary, #1e40af);
+  background: var(--camp-primary-soft, #eff6ff);
+}
+
+.city-chip.active {
+  background: var(--camp-primary, #1e40af);
+  border-color: var(--camp-primary, #1e40af);
+  color: #fff;
+}
+
+/* 定位来源徽标 */
+.loc-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  border: 1px solid #dbeafe;
+  background: var(--camp-primary-soft, #eff6ff);
+  color: var(--camp-primary, #1e40af);
+  vertical-align: 1px;
+}
+
+.loc-badge.ip {
+  border-color: var(--camp-line, #e5e7eb);
+  background: #f8fafc;
+  color: var(--camp-muted, #64748b);
 }
 </style>

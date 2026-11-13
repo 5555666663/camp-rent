@@ -210,6 +210,31 @@ a:hover {
   border-radius: 999px;
 }
 
+/* 文字按钮（el-button text）：保持纯文字链接样式，不填充底色 */
+.el-button.is-text,
+.el-button--primary.is-text,
+.el-button--primary.is-text:not(.is-disabled),
+.el-button--primary.is-text:not(.is-disabled):hover,
+.el-button--primary.is-text:not(.is-disabled):active {
+  background-color: transparent;
+  background-image: none;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+  padding-left: 4px;
+  padding-right: 4px;
+  color: var(--camp-primary);
+}
+
+.el-button--primary.is-text:not(.is-disabled):hover {
+  color: var(--camp-primary-dark);
+  text-decoration: underline;
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
 /* 输入框 / 选择器：白底 1px 描边，聚焦蓝边 + 2px 偏移焦点环 */
 .el-input__wrapper,
 .el-select__wrapper,

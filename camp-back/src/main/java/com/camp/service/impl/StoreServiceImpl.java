@@ -58,6 +58,41 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     }
 
     /**
+     * 按城市查询网点：定位不可用时的手动兜底，以该城市网点中心点计算距离
+     */
+    @Override
+    public List<StoreVO> nearestStoresByCity(String city) {
+        List<Store> stores = list(new LambdaQueryWrapper<Store>()
+                .eq(Store::getStatus, 1)
+                .like(Store::getCity, city));
+        if (stores.isEmpty()) {
+            return new ArrayList<>();
+        }
+        // 计算该城市网点中心点
+        double sumLng = 0;
+        double sumLat = 0;
+        int valid = 0;
+        for (Store s : stores) {
+            if (s.getLongitude() != null && s.getLatitude() != null) {
+                sumLng += s.getLongitude().doubleValue();
+                sumLat += s.getLatitude().doubleValue();
+                valid++;
+            }
+        }
+        BigDecimal centerLng = valid == 0 ? null : BigDecimal.valueOf(sumLng / valid);
+        BigDecimal centerLat = valid == 0 ? null : BigDecimal.valueOf(sumLat / valid);
+        List<StoreVO> result = new ArrayList<>();
+        for (Store store : stores) {
+            StoreVO vo = new StoreVO();
+            BeanUtil.copyProperties(store, vo);
+            vo.setDistanceKm(GeoUtil.distanceKm(centerLng, centerLat, store.getLongitude(), store.getLatitude()));
+            result.add(vo);
+        }
+        result.sort(Comparator.comparing(StoreVO::getDistanceKm, Comparator.nullsLast(Comparator.naturalOrder())));
+        return result;
+    }
+
+    /**
      * 查询网点详情（含距离、该网点装备与食品库存）
      */
     @Override

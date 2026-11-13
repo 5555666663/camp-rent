@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/store/**", "/api/category/**", "/api/equipment/**").permitAll()
                 // 套餐浏览放行（GET），天气 AI 推荐放行（POST，无需登录即可试用）
                 .antMatchers(HttpMethod.GET, "/api/package/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/location/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/weather/recommend").permitAll()
                 // 管理端接口需要管理员权限
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
