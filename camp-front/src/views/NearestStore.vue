@@ -10,11 +10,35 @@
           </span>
         </p>
       </div>
-      <el-button type="primary" :loading="locating" @click="locate">
-        <el-icon><LocationFilled /></el-icon>
-        {{ stores.length ? '重新定位' : '获取我的位置' }}
-      </el-button>
+      <div class="head-actions">
+        <el-button @click="openPicker">
+          <el-icon><Position /></el-icon>
+          在地图上选点
+        </el-button>
+        <el-button type="primary" :loading="locating" @click="locate">
+          <el-icon><LocationFilled /></el-icon>
+          {{ stores.length ? '重新定位' : '获取我的位置' }}
+        </el-button>
+      </div>
     </div>
+
+    <!-- 手动在地图上点选自己的位置（定位不准时最可靠） -->
+    <el-dialog
+      v-model="pickerVisible"
+      title="在地图上点选你的位置"
+      width="760px"
+      destroy-on-close
+      @opened="initPicker"
+    >
+      <div ref="pickerEl" class="pick-map"></div>
+      <p class="pick-tip">在地图上点击你所在的位置，系统会以该点重新计算各网点距离</p>
+      <template #footer>
+        <el-button @click="pickerVisible = false">取消</el-button>
+        <el-button type="primary" :disabled="!pickPoint" @click="confirmPick">
+          使用该位置
+        </el-button>
+      </template>
+    </el-dialog>
 
     <el-alert
       v-if="error"
@@ -71,11 +95,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { LocationFilled, LocationInformation, Location, Phone, Clock } from '@element-plus/icons-vue'
+import {
+  LocationFilled,
+  LocationInformation,
+  Location,
+  Phone,
+  Clock,
+  Position
+} from '@element-plus/icons-vue'
 import { getNearestStores, getIpLocation, getStoreCities } from '@/api/public'
+import { loadAMap } from '@/utils/amap'
 
 const router = useRouter()
 const stores = ref([])
@@ -95,9 +127,58 @@ const locText = computed(() => {
     const acc = locInfo.value.accuracy
     return acc ? `GPS/Wi-Fi 定位 · 精度约 ${Math.round(acc)} m` : 'GPS/Wi-Fi 定位'
   }
+  if (src === 'pick') return '手动选点定位'
   if (src === 'city') return `按城市筛选 · ${locInfo.value.city}`
   return `IP 定位 · ${locInfo.value.city || '城市级'}`
 })
+
+/* ---------------- 地图选点 ---------------- */
+const pickerVisible = ref(false)
+const pickerEl = ref(null)
+const pickPoint = ref(null)
+let pickMap = null
+let pickMarker = null
+
+function openPicker() {
+  pickPoint.value = null
+  pickerVisible.value = true
+}
+
+async function initPicker() {
+  try {
+    const AMap = await loadAMap()
+    await nextTick()
+    // 默认展示全国视野，便于快速找到自己的城市（拖动/缩放后点击选点）
+    pickMap = new AMap.Map(pickerEl.value, { zoom: 5, center: [108.95, 34.27], viewMode: '2D' })
+    pickMap.on('click', (e) => {
+      pickPoint.value = e.lnglat
+      if (pickMarker) {
+        pickMarker.setPosition(e.lnglat)
+      } else {
+        pickMarker = new AMap.Marker({ position: e.lnglat, map: pickMap })
+      }
+    })
+  } catch (e) {
+    ElMessage.error('地图加载失败，请稍后重试')
+  }
+}
+
+async function confirmPick() {
+  if (!pickPoint.value) return
+  const longitude = Number(Number(pickPoint.value.getLng()).toFixed(6))
+  const latitude = Number(Number(pickPoint.value.getLat()).toFixed(6))
+  pickerVisible.value = false
+  locating.value = true
+  error.value = ''
+  try {
+    await applyLocation(longitude, latitude, 'pick', null, null)
+    ElMessage.success('已按所选位置重新排序')
+  } catch (e) {
+    error.value = '网点查询失败，请稍后再试'
+  } finally {
+    locating.value = false
+  }
+}
 
 // 记录上次定位，便于网点详情页复用（避免重复授权）
 const CACHE_KEY = 'camp_location'
@@ -205,6 +286,27 @@ function go(id) {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 18px;
+}
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.pick-map {
+  width: 100%;
+  height: 380px;
+  border: 1px solid var(--camp-line, #e5e7eb);
+  border-radius: var(--camp-radius, 12px);
+  overflow: hidden;
+}
+
+.pick-tip {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--camp-muted, #64748b);
 }
 
 .empty-box {

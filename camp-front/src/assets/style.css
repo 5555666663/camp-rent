@@ -210,6 +210,29 @@ a:hover {
   border-radius: 999px;
 }
 
+/* plain 按钮：白底 + 蓝字 + 蓝边，避免被主按钮填充覆盖 */
+.el-button--primary.is-plain:not(.is-disabled) {
+  background-color: #fff;
+  background-image: none;
+  border-color: #bfdbfe;
+  color: var(--camp-primary);
+  box-shadow: none;
+}
+
+.el-button--primary.is-plain:not(.is-disabled):hover {
+  background-color: var(--camp-primary-soft);
+  border-color: var(--camp-primary);
+  color: var(--camp-primary-dark);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+.el-button--primary.is-plain:not(.is-disabled):active {
+  background-color: #dbeafe;
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
 /* 文字按钮（el-button text）：保持纯文字链接样式，不填充底色 */
 .el-button.is-text,
 .el-button--primary.is-text,
