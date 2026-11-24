@@ -120,17 +120,43 @@
             <div class="add-img" :style="coverStyle(eq.eqImg)"></div>
             <div class="add-info">
               <div class="add-name">{{ eq.eqName }}</div>
-              <div class="add-price">¥{{ eq.pricePerDay }}/天 · 押金 ¥{{ eq.deposit }}</div>
+              <div class="add-price" v-if="eq.productType === 2">
+                ¥{{ eq.salePrice }}/件 · 一次性购买
+              </div>
+              <div class="add-price" v-else>¥{{ eq.pricePerDay }}/天 · 押金 ¥{{ eq.deposit }}</div>
             </div>
             <span class="add-link">单独租 →</span>
           </div>
         </div>
       </template>
 
+      <!-- 露营计划（AI 输出范围限定为：套餐推荐 + 露营计划规划） -->
+      <template v-if="result.campPlan">
+        <h3 class="section-title">露营计划</h3>
+        <div class="plan-card">
+          <p v-if="result.campPlan.summary" class="plan-summary">{{ result.campPlan.summary }}</p>
+          <ul v-if="result.campPlan.timeline && result.campPlan.timeline.length" class="plan-timeline">
+            <li v-for="(it, i) in result.campPlan.timeline" :key="i">
+              <span class="plan-time">{{ it.time }}</span>
+              <span class="plan-activity">{{ it.activity }}</span>
+            </li>
+          </ul>
+          <div v-if="result.campPlan.tips && result.campPlan.tips.length" class="plan-tips">
+            <span class="plan-tips-label">注意事项</span>
+            <ul>
+              <li v-for="(t, i) in result.campPlan.tips" :key="i">{{ t }}</li>
+            </ul>
+          </div>
+        </div>
+      </template>
+
+      <p v-if="result.personalNote" class="personal-note">🎯 {{ result.personalNote }}</p>
+
       <p class="result-foot">
         推荐来源：{{ result.source === 'ai' ? '大模型' : '本地规则引擎（未配置大模型 Key 时自动兜底）' }}
         ｜ 查询日期：{{ result.date }} ｜ 地点：{{ result.location }}
       </p>
+      <p class="disclaimer">气象数据仅供参考，出行请以实地天气为准。本页 AI 仅提供套餐推荐与露营计划规划。</p>
     </template>
   </div>
 </template>
@@ -218,9 +244,95 @@ const goOrder = (equipmentId) => {
   }
   router.push({ path: '/order', query: { equipmentId } })
 }
+
 </script>
 
 <style scoped>
+
+/* 露营计划 */
+.plan-card {
+  background: #fff;
+  border: 1px solid var(--camp-line, #e5e7eb);
+  border-radius: var(--camp-radius, 12px);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.plan-summary {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--camp-ink, #0f172a);
+  line-height: 1.7;
+}
+
+.plan-timeline {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.plan-timeline li {
+  display: flex;
+  gap: 14px;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--camp-line, #e5e7eb);
+}
+
+.plan-timeline li:last-child {
+  border-bottom: none;
+}
+
+.plan-time {
+  flex: 0 0 56px;
+  font-weight: 600;
+  color: var(--camp-primary, #1e40af);
+  font-size: 13px;
+}
+
+.plan-activity {
+  font-size: 13px;
+  color: var(--camp-ink-2, #334155);
+  line-height: 1.6;
+}
+
+.plan-tips {
+  background: var(--camp-primary-soft, #eff6ff);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.plan-tips-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--camp-primary-dark, #1e3a8a);
+}
+
+.plan-tips ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.plan-tips li {
+  font-size: 13px;
+  color: var(--camp-ink-2, #334155);
+  line-height: 1.7;
+}
+
+.personal-note {
+  font-size: 13px;
+  color: var(--camp-primary-dark, #1e3a8a);
+  background: var(--camp-primary-soft, #eff6ff);
+  border-radius: 8px;
+  padding: 9px 14px;
+  margin: 0 0 12px;
+}
+
+.disclaimer {
+  font-size: 12px;
+  color: var(--camp-muted, #64748b);
+  margin: 6px 0 0;
+}
+
 .page-head {
   margin-bottom: 18px;
 }

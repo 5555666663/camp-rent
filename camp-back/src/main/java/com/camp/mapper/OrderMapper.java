@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
+
 /**
  * 租赁订单 Mapper
  *
@@ -43,4 +45,18 @@ public interface OrderMapper extends BaseMapper<Order> {
                                    @Param("userId") Long userId,
                                    @Param("orderStatus") Integer orderStatus,
                                    @Param("storeId") Long storeId);
+
+    /**
+     * 统计某装备在指定时段内已被占用的数量（租赁中/待归还/逾期）
+     *
+     * @param equipmentId 装备ID
+     * @param start       租赁开始
+     * @param end         租赁结束
+     * @return 已占用数量
+     */
+    @Select("SELECT IFNULL(SUM(quantity),0) FROM orders WHERE equipment_id = #{equipmentId} "
+            + "AND order_status IN (1,2,4) AND rent_start_time < #{end} AND rent_end_time > #{start}")
+    Integer countOccupied(@Param("equipmentId") Long equipmentId,
+                          @Param("start") LocalDateTime start,
+                          @Param("end") LocalDateTime end);
 }

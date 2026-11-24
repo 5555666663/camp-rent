@@ -91,6 +91,7 @@ public class AiRecommendServiceImpl implements AiRecommendService {
         vo.setWeather(weather);
         vo.setDate(date.toString());
         vo.setLocation(location);
+        vo.setCampPlan(result.getCampPlan());
         vo.setSource(fromAi ? "ai" : "rule");
         return vo;
     }
@@ -101,7 +102,7 @@ public class AiRecommendServiceImpl implements AiRecommendService {
      * 调用大模型生成推荐
      */
     private AiResult callAi(LocalDate date, String location, WeatherVO weather, List<PackageVO> packages) {
-        String system = "你是「露营装备租赁系统」的智能装备推荐助手。你只能输出一个 JSON 对象，不要输出任何解释文字、不要使用 Markdown 代码块。";
+        String system = "你是「露营装备租赁系统」的推荐助手。你的回答范围被严格限定为两件事：①从系统套餐列表中推荐 1-2 个套餐；②给出本次出行的露营计划（时间安排与注意事项）。除此之外的任何话题（天气科普、装备百科、闲聊、与本次出行无关的问题）一律拒绝，并在 refuse 字段写明「本次仅支持套餐推荐与露营计划规划」。只能输出一个 JSON 对象，不要输出解释文字、不要使用 Markdown 代码块。";
         String user = buildPrompt(date, location, weather, packages);
 
         JSONObject body = JSONUtil.createObj();
@@ -137,6 +138,11 @@ public class AiRecommendServiceImpl implements AiRecommendService {
         r.setRecommendPackage(toStringList(out.getJSONArray("recommend_package")));
         r.setOptionalAdd(toStringList(out.getJSONArray("optional_add")));
         r.setRemindText(out.getStr("remind_text", ""));
+        Object plan = out.get("camp_plan");
+        if (plan instanceof cn.hutool.json.JSONObject) {
+            r.setCampPlan((cn.hutool.json.JSONObject) plan);
+        }
+        r.setRefuse(out.getStr("refuse", ""));
         return r;
     }
 
@@ -176,8 +182,10 @@ public class AiRecommendServiceImpl implements AiRecommendService {
         sb.append("4. recommend_package 从上面套餐名称中选 1-2 个，必须与 scene_type 匹配；\n");
         sb.append("5. optional_add 是建议补充携带的装备名称（1-3 个，尽量与天气相关）；\n");
         sb.append("6. remind_text 是给用户的出行提醒，30 字以内；\n");
-        sb.append("7. 严格输出如下 JSON（不要代码块、不要多余文字）：\n");
-        sb.append("{\"risk_level\":\"\",\"risk_tip\":\"\",\"scene_type\":\"\",\"recommend_package\":[\"\"],\"optional_add\":[\"\"],\"remind_text\":\"\"}");
+        sb.append("7. camp_plan 是本次出行的露营计划，必须包含：summary（一句话概述）、timeline（3-4 个时间节点，每个含 time 与 activity）、tips（2-3 条注意事项）；\n");
+        sb.append("8. 你的回答只能围绕「套餐推荐」和「露营计划规划」两件事，禁止输出其它主题内容；如信息不足以推荐，仍只返回这两个部分；\n");
+        sb.append("9. 严格输出如下 JSON（不要代码块、不要多余文字）：\n");
+        sb.append("{\"risk_level\":\"\",\"risk_tip\":\"\",\"scene_type\":\"\",\"recommend_package\":[\"\"],\"optional_add\":[\"\"],\"remind_text\":\"\",\"camp_plan\":{\"summary\":\"\",\"timeline\":[{\"time\":\"\",\"activity\":\"\"}],\"tips\":[\"\"]}}");
         return sb.toString();
     }
 
@@ -272,7 +280,42 @@ public class AiRecommendServiceImpl implements AiRecommendService {
         } else {
             r.setOptionalAdd(List.of("折叠桌椅套装", "营地灯串"));
         }
+        r.setCampPlan(buildRulePlan(r.getSceneType(), r.getRiskLevel()));
         return r;
+    }
+
+    /**
+     * 规则引擎生成的基础露营计划（无大模型时兜底）
+     */
+    private java.util.Map<String, Object> buildRulePlan(String sceneType, String riskLevel) {
+        java.util.Map<String, Object> plan = new java.util.LinkedHashMap<>();
+        boolean camping = "露营".equals(sceneType);
+        plan.put("summary", camping
+                ? "建议半日营地露营：上午到场扎营，午后休闲，傍晚撤营。"
+                : "建议轻量徒步：上午出发，中午路餐，下午返程。");
+        List<java.util.Map<String, String>> timeline = new ArrayList<>();
+        timeline.add(node("08:30", camping ? "到达网点取装备、前往营地" : "到达网点取装备、前往登山口"));
+        timeline.add(node("10:00", camping ? "扎营并布置桌椅、烧水煮食" : "开始徒步，中途休息补水"));
+        timeline.add(node("12:30", camping ? "午餐与午休，注意遮阳" : "路餐并检查天气变化"));
+        timeline.add(node("16:00", camping ? "收拾营地、归还装备" : "返程并归还装备"));
+        plan.put("timeline", timeline);
+        List<String> tips = new ArrayList<>();
+        tips.add("气象数据仅供参考，出行请以实地天气为准");
+        if ("高危".equals(riskLevel)) {
+            tips.add("天气风险较高，建议改期；如必须出行请缩短行程并远离高地与水域");
+        } else {
+            tips.add("按天气准备防雨/防晒装备，出发前再次确认网点营业时间");
+            tips.add("租赁装备请在现场验机拍照，归还时按约定期限送回");
+        }
+        plan.put("tips", tips);
+        return plan;
+    }
+
+    private java.util.Map<String, String> node(String time, String activity) {
+        java.util.Map<String, String> m = new java.util.LinkedHashMap<>();
+        m.put("time", time);
+        m.put("activity", activity);
+        return m;
     }
 
     // ==================== 结果解析 ====================
@@ -348,5 +391,9 @@ public class AiRecommendServiceImpl implements AiRecommendService {
         private List<String> optionalAdd = Collections.emptyList();
         /** 提醒文案 */
         private String remindText;
+        /** 露营计划 */
+        private java.util.Map<String, Object> campPlan;
+        /** 超出范围时的拒绝说明 */
+        private String refuse;
     }
 }

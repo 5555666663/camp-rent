@@ -53,6 +53,15 @@ public class Order implements Serializable {
     /** 订单状态：0-待支付,1-租赁中,2-待归还,3-已完成,4-逾期 */
     private Integer orderStatus;
 
+    /** 实际取件时间 */
+    private LocalDateTime checkinTime;
+
+    /** 实际归还时间 */
+    private LocalDateTime checkoutTime;
+
+    /** 取消原因 */
+    private String cancelReason;
+
     /** 订单备注 */
     private String remark;
 

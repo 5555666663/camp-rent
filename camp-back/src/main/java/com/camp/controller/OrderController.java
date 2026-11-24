@@ -31,6 +31,8 @@ public class OrderController {
 
     @Resource
     private OrderService orderService;
+    @Resource
+    private com.camp.service.DamageService damageService;
 
     /**
      * 下单（占用库存，生成订单）
@@ -43,6 +45,26 @@ public class OrderController {
     /**
      * 食品下单（一次性售卖，无押金、无归还，直接完成并扣减自提网点库存）
      */
+    @PostMapping("/check-available")
+    public Result<java.util.Map<String, Object>> checkAvailable(
+            @RequestParam Long equipmentId,
+            @RequestParam(defaultValue = "1") Integer quantity,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") java.time.LocalDateTime start,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") java.time.LocalDateTime end) {
+        return Result.success(orderService.checkAvailable(equipmentId, quantity, start, end));
+    }
+
+    @PostMapping("/{id}/damage")
+    public Result<String> damage(@PathVariable Long id, @javax.validation.Valid @RequestBody com.camp.dto.DamageDTO dto) {
+        damageService.submit(id, dto);
+        return Result.success("定损已完成，押金按赔偿金额扣减后退还");
+    }
+
+    @GetMapping("/{id}/damage")
+    public Result<java.util.List<com.camp.entity.DamageRecord>> damages(@PathVariable Long id) {
+        return Result.success(damageService.listByOrder(id));
+    }
+
     @PostMapping("/food")
     public Result<List<Long>> createFood(@Valid @RequestBody FoodOrderDTO dto) {
         return Result.success("购买成功", orderService.createFoodOrder(dto));

@@ -7,6 +7,7 @@ import com.camp.entity.Equipment;
 import com.camp.service.AiRecommendService;
 import com.camp.service.CampPackageService;
 import com.camp.service.EquipmentService;
+import com.camp.service.UserPrefService;
 import com.camp.service.WeatherService;
 import com.camp.vo.PackageVO;
 import com.camp.vo.RecommendVO;
@@ -42,6 +43,8 @@ public class WeatherRecommendController {
 
     @Resource
     private AiRecommendService aiRecommendService;
+    @Resource
+    private UserPrefService userPrefService;
 
     @Resource
     private CampPackageService campPackageService;
@@ -76,6 +79,11 @@ public class WeatherRecommendController {
 
         // 3. 交给人（大）模型按规则生成推荐
         RecommendVO vo = aiRecommendService.recommend(date, location, weather, packages);
+        try {
+            vo.setPersonalNote(userPrefService.summary(com.camp.util.UserContext.getUserId()));
+        } catch (Exception ignored) {
+            // 个性化失败不影响主流程
+        }
 
         // 4. 追加适配的露营食品作为可选附加项（食品为一次性售卖，不属于套餐）
         List<Equipment> foods = equipmentService.list(new LambdaQueryWrapper<Equipment>()

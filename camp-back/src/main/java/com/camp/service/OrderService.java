@@ -71,4 +71,16 @@ public interface OrderService extends IService<Order> {
      * @return 生成的订单ID列表
      */
     java.util.List<Long> createFoodOrder(com.camp.dto.FoodOrderDTO dto);
+
+    /**
+     * 时段可用性校验：返回可租数量与是否充足
+     *
+     * @param equipmentId 装备ID
+     * @param quantity    期望数量
+     * @param start       租赁开始时间
+     * @param end         租赁结束时间
+     * @return 含 available / enough / message 的结果
+     */
+    java.util.Map<String, Object> checkAvailable(Long equipmentId, Integer quantity,
+                                                 java.time.LocalDateTime start, java.time.LocalDateTime end);
 }

@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 // 登录、注册放行
                 .antMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .antMatchers("/uploads/**", "/api/pay/notify", "/api/pay/mock/**").permitAll()
                 // 前台公开浏览接口放行（GET）
                 .antMatchers(HttpMethod.GET, "/api/store/**", "/api/category/**", "/api/equipment/**").permitAll()
                 // 套餐浏览放行（GET），天气 AI 推荐放行（POST，无需登录即可试用）
@@ -53,6 +54,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/location/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/weather/recommend").permitAll()
                 // 管理端接口需要管理员权限
+                .antMatchers("/api/storage/**").hasAnyRole("STORAGE", "ADMIN")
                 .antMatchers("/api/admin/**").hasRole("ADMIN")
                 // RBAC：客服工作台接口，仅客服与超级管理员可访问
                 .antMatchers("/api/cs/**").hasAnyRole("CS", "ADMIN")

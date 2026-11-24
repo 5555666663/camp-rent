@@ -55,6 +55,12 @@ public class Equipment implements Serializable {
     /** 库存数量 */
     private Integer stockNum;
 
+    /** 保质期天数（食品） */
+    private Integer shelfLifeDays;
+
+    /** 库存预警阈值 */
+    private Integer minStock;
+
     /** 装备描述 */
     private String description;
 

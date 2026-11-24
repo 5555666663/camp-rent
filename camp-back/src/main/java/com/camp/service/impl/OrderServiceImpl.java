@@ -54,6 +54,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Resource
     private DepositRecordService depositRecordService;
+    @Resource
+    private com.camp.service.FoodBatchService foodBatchService;
+    @Resource
+    private com.camp.mapper.PaymentMapper paymentMapper;
 
     /**
      * 下单：校验库存、扣减库存、生成订单与押金记录
@@ -83,6 +87,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (dto.getRentStartTime() == null || dto.getRentEndTime() == null
                 || !dto.getRentEndTime().isAfter(dto.getRentStartTime())) {
             throw new BusinessException("归还时间不能早于租赁开始时间");
+        }
+        // 时段冲突校验：同一装备在重叠时段（租赁中/待归还/逾期）已占用的数量
+        Integer occupied = orderMapper.countOccupied(equipment.getId(), dto.getRentStartTime(), dto.getRentEndTime());
+        int stockNum = equipment.getStockNum() == null ? 0 : equipment.getStockNum();
+        int occupiedNum = occupied == null ? 0 : occupied;
+        if (occupiedNum + dto.getQuantity() > stockNum) {
+            throw new BusinessException("该时段已被预约（可租 " + Math.max(0, stockNum - occupiedNum) + " 件），请调整时间或数量");
         }
         // 计算租赁天数（不足一天按一天算）
         long days = Duration.between(dto.getRentStartTime(), dto.getRentEndTime()).toDays();
@@ -175,7 +186,57 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         updateById(order);
         // 恢复装备所属网点库存
         equipmentService.restoreStock(order.getEquipmentId(), order.getQuantity());
-        updateDepositStatus(orderId, 2, "归还完成，押金已退还");
+        refundDepositInline(orderId, java.math.BigDecimal.ZERO, "归还完成，押金已退还");
+    }
+
+    /**
+     * 押金退款（内部）：写实退金额、状态，并把已支付押金单置为已退款
+     */
+    private void refundDepositInline(Long orderId, java.math.BigDecimal deduct, String remark) {
+        DepositRecord record = depositRecordService.getOne(
+                new LambdaQueryWrapper<DepositRecord>().eq(DepositRecord::getOrderId, orderId));
+        if (record != null) {
+            java.math.BigDecimal deposit = record.getDepositMoney() == null ? java.math.BigDecimal.ZERO : record.getDepositMoney();
+            java.math.BigDecimal d = deduct == null ? java.math.BigDecimal.ZERO : deduct;
+            if (d.compareTo(deposit) > 0) {
+                d = deposit;
+            }
+            record.setDeductAmount(d);
+            record.setRefundAmount(deposit.subtract(d));
+            record.setDepositStatus(d.compareTo(java.math.BigDecimal.ZERO) <= 0 ? 2
+                    : (d.compareTo(deposit) >= 0 ? 3 : 4));
+            record.setRemark(remark);
+            depositRecordService.updateById(record);
+            List<com.camp.entity.Payment> pays = paymentMapper.selectList(
+                    new LambdaQueryWrapper<com.camp.entity.Payment>()
+                            .eq(com.camp.entity.Payment::getOrderId, orderId)
+                            .eq(com.camp.entity.Payment::getPayType, 1)
+                            .eq(com.camp.entity.Payment::getStatus, 1));
+            for (com.camp.entity.Payment pay : pays) {
+                pay.setStatus(2);
+                pay.setRefundTime(LocalDateTime.now());
+                paymentMapper.updateById(pay);
+            }
+        }
+    }
+
+    /**
+     * 时段可用性校验
+     */
+    @Override
+    public java.util.Map<String, Object> checkAvailable(Long equipmentId, Integer quantity,
+                                                       LocalDateTime start, LocalDateTime end) {
+        java.util.Map<String, Object> result = new java.util.HashMap<>();
+        Equipment equipment = equipmentService.getById(equipmentId);
+        int stock = equipment == null || equipment.getStockNum() == null ? 0 : equipment.getStockNum();
+        Integer occupied = orderMapper.countOccupied(equipmentId, start, end);
+        int occupiedNum = occupied == null ? 0 : occupied;
+        int available = Math.max(0, stock - occupiedNum);
+        int need = quantity == null ? 1 : quantity;
+        result.put("available", available);
+        result.put("enough", available >= need);
+        result.put("message", available >= need ? "该时段可预约" : "该时段仅剩 " + available + " 件可租");
+        return result;
     }
 
     /**
@@ -241,7 +302,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setOrderStatus(3);
         updateById(order);
         equipmentService.restoreStock(order.getEquipmentId(), order.getQuantity());
-        updateDepositStatus(orderId, 2, "管理端核验归还，押金已退还");
+        refundDepositInline(orderId, java.math.BigDecimal.ZERO, "管理端核验归还，押金已退还");
     }
 
     /**
@@ -265,6 +326,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 new LambdaQueryWrapper<DepositRecord>().eq(DepositRecord::getOrderId, orderId));
         if (record != null) {
             record.setDepositStatus(status);
+            if (status == 1) {
+                record.setFrozenTime(LocalDateTime.now());
+            }
             record.setRemark(remark);
             depositRecordService.updateById(record);
         }
@@ -303,6 +367,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             BigDecimal salePrice = food.getSalePrice() == null ? BigDecimal.ZERO : food.getSalePrice();
             BigDecimal total = salePrice.multiply(BigDecimal.valueOf(item.getQuantity()));
 
+            // 保质期校验：可售数量 = 未过期批次数量
+            int sellable = foodBatchService.availableQuantity(food.getId());
+            if (sellable < item.getQuantity()) {
+                throw new BusinessException("【" + food.getEqName() + "】可售库存不足（未过期批次仅剩 " + sellable + " 件）");
+            }
+            foodBatchService.deduct(food.getId(), item.getQuantity());
             // 扣减库存（库存不足自动回滚）
             boolean ok = equipmentService.deductStock(food.getId(), item.getQuantity());
             if (!ok) {

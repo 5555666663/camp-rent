@@ -54,9 +54,9 @@ weather:
 #   3. 如不是 DeepSeek，改 base-url 与 model 即可
 # 未配置 Key 时系统自动使用本地规则引擎，功能照常可用
 ai:
-  enabled: false
+  enabled: true
   base-url: https://api.deepseek.com
-  api-key:
+  api-key: sk-879a4cb9938645b3843897ca65046937
   model: deepseek-chat
   timeout: 20000
 
@@ -69,3 +69,6 @@ amap:
   base-url: https://restapi.amap.com
   timeout: 5000
 
+# 文件上传目录（定损照片等静态资源）
+file:
+  upload-dir: D:/DSH/camp-rent/uploads

@@ -34,6 +34,12 @@ public class RecommendVO implements Serializable {
     /** 出行提醒文案 */
     private String remindText;
 
+    /** 露营计划（summary / timeline / tips） */
+    private java.util.Map<String, Object> campPlan;
+
+    /** 个性化提示（依据用户历史租赁记录） */
+    private String personalNote;
+
     /** 当日天气 */
     private WeatherVO weather;
 

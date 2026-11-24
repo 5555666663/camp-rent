@@ -31,6 +31,15 @@ public class DepositRecord implements Serializable {
     /** 押金状态：0-未支付,1-已支付,2-已退还,3-已扣除 */
     private Integer depositStatus;
 
+    /** 押金冻结时间 */
+    private LocalDateTime frozenTime;
+
+    /** 实退金额 */
+    private java.math.BigDecimal refundAmount;
+
+    /** 扣除金额 */
+    private java.math.BigDecimal deductAmount;
+
     /** 备注 */
     private String remark;
 
