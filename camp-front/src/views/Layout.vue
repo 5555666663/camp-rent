@@ -32,7 +32,11 @@
             <el-icon><Sunny /></el-icon>
             <span>装备推荐</span>
           </router-link>
-          <router-link to="/my-orders" class="nav-item">
+          <router-link to="/consult" class="nav-item">
+          <el-icon><ChatDotRound /></el-icon>
+          <span>在线咨询</span>
+        </router-link>
+        <router-link to="/my-orders" class="nav-item">
             <el-icon><Tickets /></el-icon>
             <span>我的订单</span>
           </router-link>

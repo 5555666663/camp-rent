@@ -28,7 +28,8 @@ const routes = [
       { path: 'package/:id', name: 'PackageDetail', component: () => import('@/views/PackageDetail.vue'), meta: { title: '套餐详情' } },
       { path: 'order', name: 'OrderCreate', component: () => import('@/views/OrderCreate.vue'), meta: { title: '租赁下单', requiresAuth: true } },
       { path: 'my-orders', name: 'MyOrders', component: () => import('@/views/MyOrders.vue'), meta: { title: '我的订单', requiresAuth: true } },
-      { path: 'messages', name: 'MessageCenter', component: () => import('@/views/MessageCenter.vue'), meta: { title: '消息中心', requiresAuth: true } }
+      { path: 'messages', name: 'MessageCenter', component: () => import('@/views/MessageCenter.vue'), meta: { title: '消息中心', requiresAuth: true } },
+      { path: 'consult', name: 'Consult', component: () => import('@/views/Consult.vue'), meta: { title: '在线咨询', requiresAuth: true } }
     ]
   },
 
@@ -63,7 +64,7 @@ const routes = [
       { path: '', redirect: '/cs/order' },
       { path: 'order', name: 'CsOrder', component: () => import('@/views/cs/CsOrder.vue'), meta: { title: '订单工作台', roles: ['ROLE_CS', 'ROLE_ADMIN'] } },
       { path: 'comment', name: 'CsComment', component: () => import('@/views/cs/CsComment.vue'), meta: { title: '评价管理', roles: ['ROLE_CS', 'ROLE_ADMIN'] } },
-      { path: 'message', name: 'CsMessage', component: () => import('@/views/cs/CsMessage.vue'), meta: { title: '用户咨询消息', roles: ['ROLE_CS', 'ROLE_ADMIN'] } }
+      { path: 'message', name: 'CsConsult', component: () => import('@/views/cs/CsConsult.vue'), meta: { title: '用户咨询消息', roles: ['ROLE_CS', 'ROLE_ADMIN'] } }
     ]
   },
   {

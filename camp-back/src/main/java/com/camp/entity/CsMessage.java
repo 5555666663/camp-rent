@@ -27,6 +27,9 @@ public class CsMessage implements Serializable {
     /** 提问用户名 */
     private String username;
 
+    /** 咨询标题 */
+    private String title;
+
     /** 咨询内容 */
     private String content;
 
