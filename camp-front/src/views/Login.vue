@@ -66,6 +66,8 @@
                 <div class="demo-chips">
                   <button class="chip" @click="fillDemo('admin', '123456')">管理员 admin / 123456</button>
                   <button class="chip" @click="fillDemo('zhangsan', '123456')">用户 zhangsan / 123456</button>
+                  <button class="chip" @click="fillDemo('kefu', '123456')">客服 kefu / 123456</button>
+                  <button class="chip" @click="fillDemo('cangchu', '123456')">仓储 cangchu / 123456</button>
                 </div>
               </div>
             </el-tab-pane>
