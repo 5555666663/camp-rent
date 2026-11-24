@@ -94,6 +94,16 @@ public class StorageController {
         return Result.success(PageResult.of(page));
     }
 
+    /** 维保记录分页（仓储人员可查询历史） */
+    @GetMapping("/maintain/page")
+    public Result<PageResult<com.camp.vo.MaintainVO>> maintainPage(
+            @RequestParam(defaultValue = "1") long current,
+            @RequestParam(defaultValue = "10") long size,
+            @RequestParam(required = false) Long storeId,
+            @RequestParam(required = false) Long equipmentId) {
+        return Result.success(PageResult.of(maintainService.pageMaintains(current, size, storeId, equipmentId)));
+    }
+
     /** 新增维保记录 */
     @OperLog(module = "仓储管理", action = "新增维保")
     @PostMapping("/maintain")

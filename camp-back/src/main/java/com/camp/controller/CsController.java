@@ -126,4 +126,11 @@ public class CsController {
         csMessageService.updateById(message);
         return Result.success();
     }
+
+    /** 修改订单备注（客服可写，用于记录售后沟通结果） */
+    @PutMapping("/order/{id}/remark")
+    public Result<String> updateRemark(@PathVariable Long id, @RequestBody java.util.Map<String, String> body) {
+        orderService.updateRemark(id, body.get("remark"));
+        return Result.success("备注已保存");
+    }
 }

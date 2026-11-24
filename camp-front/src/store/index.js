@@ -26,6 +26,11 @@ export const useUserStore = defineStore('user', {
     // 用户名
     username: (state) => (state.user ? state.user.username : '')
   },
+  // 是否为仓储人员
+  isStorage: (state) => {
+    const list = (state.user && state.user.roles) || (state.user && state.user.role === 1 ? ['ROLE_ADMIN'] : ['ROLE_USER'])
+    return list.includes('ROLE_STORAGE')
+  },
   actions: {
     // 保存登录信息
     setLogin(token, user) {

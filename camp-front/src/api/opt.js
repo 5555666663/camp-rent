@@ -118,3 +118,34 @@ export function submitDamage(orderId, data) {
 export function getDamage(orderId) {
   return request.get('/order/' + orderId + '/damage')
 }
+
+
+// ============================================================
+// 仓储：维保记录分页
+// ============================================================
+export function getStorageMaintainPage(params) {
+  return request.get('/storage/maintain/page', { params })
+}
+
+// ============================================================
+// 管理员：套餐管理
+// ============================================================
+export function getPackagePage(params) {
+  return request.get('/admin/package/page', { params })
+}
+
+export function addPackage(data) {
+  return request.post('/admin/package', data)
+}
+
+export function updatePackage(data) {
+  return request.put('/admin/package', data)
+}
+
+export function deletePackage(id) {
+  return request.delete(`/admin/package/${id}`)
+}
+
+export function togglePackageStatus(id, status) {
+  return request.put(`/admin/package/${id}/status`, null, { params: { status } })
+}

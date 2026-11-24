@@ -184,9 +184,11 @@ function handleLogin() {
       const roles = res.roles || []
       let home = '/'
       if (roles.includes('ROLE_ADMIN')) {
-        home = '/admin'
+        home = '/admin/stats'
       } else if (roles.includes('ROLE_CS')) {
-        home = '/cs'
+        home = '/cs/order'
+      } else if (roles.includes('ROLE_STORAGE')) {
+        home = '/storage/stock'
       }
       router.push(redirect || home)
     } finally {
