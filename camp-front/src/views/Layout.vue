@@ -40,6 +40,11 @@
 
         <div class="user-area">
           <template v-if="userStore.isLogin">
+            <router-link to="/messages" class="bell" title="消息中心">
+              <el-badge :value="unread" :hidden="!unread" :max="99">
+                <el-icon><Bell /></el-icon>
+              </el-badge>
+            </router-link>
             <el-dropdown @command="handleCommand" trigger="click">
               <span class="user-chip">
                 <span class="avatar">{{ avatarText }}</span>
@@ -86,10 +91,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store'
 import { ElMessage } from 'element-plus'
+import { getUnreadCount } from '@/api/opt'
 import {
   LocationFilled,
   Aim,
@@ -99,12 +105,38 @@ import {
   SwitchButton,
   ArrowDown,
   ArrowLeft,
-  Sunny
+  Sunny,
+  Bell
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+
+// 未读消息数（登录后每 60 秒轮询一次）
+const unread = ref(0)
+let unreadTimer = null
+
+async function refreshUnread() {
+  if (!userStore.isLogin) {
+    unread.value = 0
+    return
+  }
+  try {
+    unread.value = (await getUnreadCount()) || 0
+  } catch (e) {
+    unread.value = 0
+  }
+}
+
+onMounted(() => {
+  refreshUnread()
+  unreadTimer = setInterval(refreshUnread, 60000)
+})
+
+onUnmounted(() => {
+  if (unreadTimer) clearInterval(unreadTimer)
+})
 
 // 首页（装备浏览）不显示返回键，其余页面显示
 const showBack = computed(() => route.path !== '/equipment' && route.path !== '/')
@@ -345,5 +377,21 @@ function handleCommand(cmd) {
 
 .footer-inner .dot {
   opacity: 0.5;
+}
+.bell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-right: 10px;
+  border-radius: 10px;
+  color: var(--camp-ink-2);
+  transition: all 0.18s ease-out;
+}
+
+.bell:hover {
+  background: var(--camp-primary-soft);
+  color: var(--camp-primary);
 }
 </style>

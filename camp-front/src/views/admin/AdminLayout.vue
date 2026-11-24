@@ -20,14 +20,20 @@
         active-text-color="#1e40af"
         class="side-menu"
       >
-        <el-menu-item index="/admin/stats"><el-icon><DataAnalysis /></el-icon>数据统计</el-menu-item>
-        <el-menu-item index="/admin/store"><el-icon><OfficeBuilding /></el-icon>网点管理</el-menu-item>
-        <el-menu-item index="/admin/category"><el-icon><Menu /></el-icon>分类管理</el-menu-item>
-        <el-menu-item index="/admin/equipment"><el-icon><Box /></el-icon>装备管理</el-menu-item>
-        <el-menu-item index="/admin/maintain"><el-icon><Tools /></el-icon>维保管理</el-menu-item>
-        <el-menu-item index="/admin/order"><el-icon><Tickets /></el-icon>订单管理</el-menu-item>
-        <el-menu-item index="/admin/comment"><el-icon><ChatDotRound /></el-icon>评价管理</el-menu-item>
-        <el-menu-item index="/admin/user"><el-icon><UserFilled /></el-icon>用户管理</el-menu-item>
+        <template v-if="userStore.isAdmin">
+          <el-menu-item index="/admin/stats"><el-icon><DataAnalysis /></el-icon>数据统计</el-menu-item>
+          <el-menu-item index="/admin/store"><el-icon><OfficeBuilding /></el-icon>网点管理</el-menu-item>
+          <el-menu-item index="/admin/category"><el-icon><Menu /></el-icon>分类管理</el-menu-item>
+          <el-menu-item index="/admin/equipment"><el-icon><Box /></el-icon>装备管理</el-menu-item>
+          <el-menu-item index="/admin/maintain"><el-icon><Tools /></el-icon>维保管理</el-menu-item>
+          <el-menu-item index="/admin/order"><el-icon><Tickets /></el-icon>订单管理</el-menu-item>
+          <el-menu-item index="/admin/comment"><el-icon><ChatDotRound /></el-icon>评价管理</el-menu-item>
+          <el-menu-item index="/admin/user"><el-icon><UserFilled /></el-icon>用户管理</el-menu-item>
+          <el-menu-item index="/admin/rule"><el-icon><SetUp /></el-icon>推荐规则</el-menu-item>
+          <el-menu-item index="/admin/warn"><el-icon><Warning /></el-icon>库存预警</el-menu-item>
+          <el-menu-item index="/admin/log"><el-icon><Document /></el-icon>操作日志</el-menu-item>
+        </template>
+        <el-menu-item index="/storage"><el-icon><Box /></el-icon>仓储工作台</el-menu-item>
       </el-menu>
 
       <div class="aside-foot">
@@ -90,7 +96,10 @@ import {
   HomeFilled,
   SwitchButton,
   ArrowDown,
-  UserFilled
+  UserFilled,
+  SetUp,
+  Warning,
+  Document
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store'
 import { ElMessage } from 'element-plus'

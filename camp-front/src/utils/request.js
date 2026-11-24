@@ -25,6 +25,10 @@ request.interceptors.request.use(
 // 响应拦截器：统一处理业务码与异常
 request.interceptors.response.use(
   (response) => {
+    // 文件下载（xlsx 等）：直接返回原始响应，交由页面处理 blob
+    if (response.config && response.config.responseType === 'blob') {
+      return response
+    }
     const res = response.data
     // 后端统一返回 { code, msg, data }，成功时直接返回 data 业务数据
     if (res.code === 200) {
