@@ -398,4 +398,73 @@ mysql -uroot -p373394589 --default-character-set=utf8mb4 < sql/update-rbac.sql
 - 后端：`controller/LocationController.java`、`service/LocationService(+Impl)`、`vo/IpLocationVO.java`、`StoreController` / `StoreService(+Impl)`（`city` 参数）、`config/SecurityConfig.java`（放行 `GET /api/location/**`）
 - 前端：`views/NearestStore.vue`（三级定位 + 地图选点弹窗）、`api/public.js`（`getIpLocation`）
 
+## 十三、迭代优化 V1.0（扩展功能）
 
+在第一版的基础上，系统按真实租赁业务补齐了支付、押金风控、消息、库存预警、审计与导出等能力，数据库表由 13 张扩展到 **22 张**（新增 payment、damage_record、message、food_batch、user_preference、recommend_rule、sys_oper_log、chat_session、chat_message）。
+
+### 1. 业务能力
+
+| 能力 | 说明 | 关键接口 / 位置 |
+| --- | --- | --- |
+| 沙箱支付 | 押金与租金分别生成支付单，`pay_no` 作为幂等键；模拟回调成功后押金置为已支付并写入冻结时间，两者都支付完成订单才进入租赁中 | `/api/pay/create`、`/api/pay/mock/{payNo}`、`/api/pay/notify`、`/api/pay/refund` |
+| 定损赔偿 | 归还时可上传最多 9 张照片、选择损坏等级并填写赔偿金额（不得超过押金），提交后回补库存并把订单置为已完成，押金按应退/应扣结算 | `/api/damage/create`、`/api/damage/order/{orderId}` |
+| 站内消息 | 到期前提醒、逾期提醒与售后通知，顶部铃铛显示未读数；定时任务每天 9 点扫描到期与逾期订单 | `/api/message/list`、`/api/message/unread`、`OrderRemindTask` |
+| 时段冲突校验 | 下单前按 `SUM(quantity) WHERE order_status IN (1,2,4) AND 时间段重叠` 判断是否超卖，避免同一件装备被重复租出 | `OrderMapper.countOccupied` |
+| 食品批次 | 入库登记生产日期与到期日期，出库按到期日升序先进先出，定时刷新临期/过期状态 | `food_batch`、`/api/storage/batch/**` |
+| 推荐规则 | 气象规则存表（`condition_json`/`action_json`/`priority`），后台可视化增删改、启停与在线试算，无需改代码 | `/api/admin/rule/**` |
+| 审计日志 | AOP 切面记录操作人、角色、模块、操作、URI、脱敏参数、返回码与耗时 | `aspect/OperLogAspect`、`/api/admin/log/page` |
+| Excel 导出 | 订单、维保、统计三类导出，统计含网点订单量/装备租赁频次/近 30 天趋势三个工作表 | `/api/admin/export/**` |
+
+### 2. 大模型输出限域
+
+智能推荐调用大模型时，系统提示中明确限定只输出「套餐推荐 + 露营计划规划」，其他话题一律拒答；返回结构在原有字段上扩展 `campPlan`（`summary`/`timeline`/`tips`）与 `personalNote`（按用户近 20 条订单生成的偏好描述），页面附带「气象数据仅供参考」的免责声明。
+
+### 3. 数据库脚本
+
+```bash
+mysql -uroot -p373394589 camp_rent < sql/update-opt-v1.sql
+```
+
+脚本幂等（`CREATE TABLE IF NOT EXISTS` / 列存在性判断），可重复执行。
+
+## 十四、四角色控制台与在线客服
+
+### 1. 四种角色
+
+| 角色 | 角色标识 | 控制台入口 | 可见菜单 |
+| --- | --- | --- | --- |
+| 普通用户 | ROLE_USER | 前台 | 网点地图、就近网点、装备浏览、装备推荐、我的订单、在线咨询 |
+| 客服 | ROLE_CS | `/cs` | 订单工作台、评价管理、用户咨询消息 |
+| 仓储 | ROLE_STORAGE | `/storage` | 装备库存盘点、装备维保管理、库存变更记录 |
+| 管理员 | ROLE_ADMIN | `/admin` | 全部 12 项（数据统计、网点、分类、商品、套餐、维保、订单、评价、账号权限、库存预警、推荐规则、操作日志） |
+
+控制台实现要点：菜单配置集中在 `src/config/consoleMenu.js`（每项声明 `path`/`title`/`icon`/`roles`），`views/admin/AdminLayout.vue` 为三角色共用布局（可折叠侧栏、面包屑、角色标签）；路由在 `meta.roles` 声明允许角色，全局守卫逐级合并 `matched` 上的角色要求，不满足时跳 `/403`；后端再按前缀校验（`/api/admin/**`、`/api/cs/**`、`/api/storage/**`），形成前后端双重校验。
+
+### 2. 在线客服即时聊天
+
+采用轮询而非 WebSocket（用户端 4 秒、客服端 5 秒），以降低连接维护与鉴权复杂度：
+
+| 表 | 说明 |
+| --- | --- |
+| `chat_session` | 以 `user_id` 唯一，代表一个用户与客服的唯一会话，冗余 `last_content`、`last_time`、`user_unread`、`cs_unread` |
+| `chat_message` | 按会话存消息，`sender_type` 1 用户 / 2 客服，索引 `(session_id, id)` 支撑按序拉取 |
+
+接口：用户端 `/api/chat/my`、`/api/chat/messages`、`/api/chat/send`、`/api/chat/unread`；客服端 `/api/cs/chat/page`、`/api/cs/chat/{id}/messages`、`/api/cs/chat/{id}/reply`、`/api/cs/chat/{id}/read`。前端页面为 `views/ConsultChat.vue`（气泡对话 + 时间分隔 + 快捷问题 + Enter 发送）与 `views/cs/CsChat.vue`（左会话列表带未读红点 + 右对话窗口）。
+
+### 3. 测试账号
+
+| 角色 | 账号 | 密码 |
+| --- | --- | --- |
+| 管理员 | admin | 123456 |
+| 普通用户 | zhangsan / lisi | 123456 |
+| 客服 | kefu | 123456 |
+| 仓储 | cangchu | 123456 |
+
+登录页已列出上述账号，可直接点击登录。
+
+## 十五、毕业论文与插图
+
+- 论文（DOCX）：`D:\DSH\thesis\多网点露营装备租赁系统的设计与实现-毕业论文.docx`，桌面另存一份。正文含 27 张图（12 张结构/流程/数据流/E-R 图 + 15 张系统运行截图）、26 张三线表、10 条参考文献与 36 处上标引用。
+- 生成链：`docx_helpers.py`（排版与图片占位）+ `content_front.py`/`content_ch1_2.py`/`content_ch3_4.py`/`content_ch5_6.py`（正文）+ `build.py`（三节：封面声明 / 摘要目录 / 正文）+ `finalize.py`（正文上标引用）；图表由 `gen_figs.py` 生成 `.drawio` 后用 draw.io 命令行导出 PNG，截图由 `capture.py` 驱动浏览器截取。
+- 插图清单与 AI 绘图提示词：`D:\DSH\thesis\论文插图清单与AI绘图提示词.docx`（含 12 张图表提示词、15 张截图清单与拍摄说明）。
+- 本轮按项目变更同步更新：功能需求 21→30 项、数据库 13→22 张表、新增 5.2.6 在线客服即时聊天、5.3.5 三角色控制台、5.3.6 支付押金与定损赔偿、5.3.7 推荐规则配置与审计导出，并补充图 5.13～5.15。

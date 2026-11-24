@@ -231,6 +231,7 @@ function handleCommand(cmd) {
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logo-icon {
@@ -242,12 +243,14 @@ function handleCommand(cmd) {
   font-size: 18px;
   background: var(--camp-primary-soft);
   color: var(--camp-primary);
+  flex-shrink: 0;
 }
 
 .logo-text {
   display: flex;
   flex-direction: column;
   line-height: 1.15;
+  white-space: nowrap;
 }
 
 .logo-title {
@@ -255,6 +258,7 @@ function handleCommand(cmd) {
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--camp-ink);
+  white-space: nowrap;
 }
 
 .logo-sub {
