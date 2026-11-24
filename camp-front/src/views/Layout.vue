@@ -272,6 +272,7 @@ function handleCommand(cmd) {
 }
 
 .nav-item {
+  white-space: nowrap;
   position: relative;
   display: inline-flex;
   align-items: center;
